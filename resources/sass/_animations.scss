@@ -1,27 +1,10 @@
 //
-// Animations du site public : révélations au défilement, effet Ken Burns
-// du carrousel d'accueil, transitions des légendes et survols des cartes.
-// Désactivées si l'utilisateur préfère réduire les animations.
+// Animations du site public : effet Ken Burns du carrousel d'accueil,
+// transitions des légendes, survols des cartes et flottement du bandeau.
+// Le contenu est toujours visible : aucune animation ne masque une
+// section (précaution prise pour les navigateurs embarqués qui ne
+// déclenchent pas les animations de défilement).
 //
-
-/* Révélation au défilement (déclenchée par data-reveal + IntersectionObserver).
-   L'état masqué n'est posé que si JS est actif (classe js-anim sur <html>). */
-
-html.js-anim [data-reveal] {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-    transition-delay: var(--reveal-delay, 0s);
-}
-
-html.js-anim [data-reveal="left"] { transform: translateX(-32px); }
-html.js-anim [data-reveal="right"] { transform: translateX(32px); }
-html.js-anim [data-reveal="zoom"] { transform: scale(0.92); }
-
-[data-reveal].revealed {
-    opacity: 1;
-    transform: none;
-}
 
 /* Carrousel d'accueil */
 
@@ -55,7 +38,7 @@ html.js-anim [data-reveal="zoom"] { transform: scale(0.92); }
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.7) 100%);
 }
 
-/* Légendes : Bootstrap rebascle .active à chaque diapo, l'animation rejoue */
+/* Légendes : Bootstrap rebascule .active à chaque diapo, l'animation rejoue */
 
 .hero-carousel .hero-caption {
     position: absolute;
@@ -178,12 +161,6 @@ html.js-anim [data-reveal="zoom"] { transform: scale(0.92); }
 /* Accessibilité : respecte « animations réduites » */
 
 @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-        opacity: 1;
-        transform: none;
-        transition: none;
-    }
-
     .hero-carousel .carousel-item.active img,
     .hero-carousel .carousel-item.active .hero-caption > *,
     .float-soft {

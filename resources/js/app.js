@@ -6,36 +6,11 @@ import * as bootstrap from 'bootstrap';
 
 window.bootstrap = bootstrap;
 
-// Les sections [data-reveal] ne sont masquées que si le JS tourne :
-// sans JS (ou en cas d'erreur), tout le contenu reste visible.
-document.documentElement.classList.add('js-anim');
-
-// --- Révélation des sections au défilement ---
-//
-// Déclenchée par l'événement « scroll » + getBoundingClientRect, sans
-// IntersectionObserver ni requestAnimationFrame : ces API se mettent en
-// pause dans certains navigateurs embarqués (webviews), ce qui laissait
-// les sections invisibles.
-
-const revealElements = [...document.querySelectorAll('[data-reveal]')];
-
-const revealNearViewport = () => {
-    const limit = window.innerHeight + 150;
-
-    for (const element of revealElements) {
-        if (element.classList.contains('revealed')) continue;
-
-        if (element.getBoundingClientRect().top < limit) {
-            element.classList.add('revealed');
-        }
-    }
-};
-
-window.addEventListener('scroll', revealNearViewport, { passive: true });
-window.addEventListener('resize', revealNearViewport, { passive: true });
-setTimeout(revealNearViewport, 50);
-
 // --- Compteurs animés (éléments [data-counter]) ---
+//
+// La valeur finale est déjà rendue côté serveur : sans JavaScript (ou si
+// le déclenchement échoue dans un navigateur embarqué), le bon chiffre
+// s'affiche. L'animation n'est qu'un embellissement au défilement.
 
 const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 
@@ -67,8 +42,7 @@ const launchVisibleCounters = () => {
 };
 
 window.addEventListener('scroll', launchVisibleCounters, { passive: true });
-window.addEventListener('resize', launchVisibleCounters, { passive: true });
-setTimeout(launchVisibleCounters, 50);
+setTimeout(launchVisibleCounters, 200);
 
 // --- Barre de navigation : ombre renforcée après le haut de page ---
 

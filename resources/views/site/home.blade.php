@@ -125,13 +125,13 @@
     {{-- Services --}}
     <section class="py-5 my-4">
         <div class="container">
-            <div class="text-center mb-5" data-reveal>
+            <div class="text-center mb-5">
                 <h2 class="fw-bold mb-2">{{ __('site.home.services.title') }}</h2>
                 <p class="text-muted">{{ setting('home_services_text') }}</p>
             </div>
 
             <div class="row g-4">
-                <div class="col-md-4" data-reveal>
+                <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm hover-lift">
                         <div class="card-body p-4 text-center">
                             <span class="service-icon d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-4 mb-3" style="width: 72px; height: 72px;"><i class="bi bi-car-front fs-2"></i></span>
@@ -141,7 +141,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4" data-reveal style="--reveal-delay: 0.12s">
+                <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm hover-lift">
                         <div class="card-body p-4 text-center">
                             <span class="service-icon d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-4 mb-3" style="width: 72px; height: 72px;"><i class="bi bi-person-badge fs-2"></i></span>
@@ -151,7 +151,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4" data-reveal style="--reveal-delay: 0.24s">
+                <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm hover-lift">
                         <div class="card-body p-4 text-center">
                             <span class="service-icon d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-4 mb-3" style="width: 72px; height: 72px;"><i class="bi bi-steering-wheel fs-2"></i></span>
@@ -170,9 +170,9 @@
         <div class="container">
             <div class="row g-4 text-center">
                 @foreach ($stats as $index => $stat)
-                    <div class="col-6 col-lg-3" data-reveal style="--reveal-delay: {{ $index * 0.1 }}s">
+                    <div class="col-6 col-lg-3">
                         <i class="bi bi-{{ $stat['icon'] }} fs-2 text-white-50 d-block mb-2"></i>
-                        <span class="display-6 fw-bold" data-counter="{{ $stat['value'] }}">0</span>
+                        <span class="display-6 fw-bold" data-counter="{{ $stat['value'] }}">{{ number_format((float) $stat['value'], 0, ",", "\xe2\x80\xaf") }}</span>
                         <p class="text-white-50 small mb-0">{{ $stat['label'] }}</p>
                     </div>
                 @endforeach
@@ -184,7 +184,7 @@
     <section class="py-5">
         <div class="container">
             <div class="row g-5 align-items-center">
-                <div class="col-lg-5" data-reveal="left">
+                <div class="col-lg-5">
                     <h2 class="fw-bold mb-3">{{ __('site.home.advantages.title') }}</h2>
                     <p class="text-muted mb-4">{{ __('site.home.advantages.subtitle') }}</p>
                     <a href="{{ route('contact', app()->getLocale()) }}" class="btn btn-secondary btn-lg"><i class="bi bi-chat-dots me-2"></i>{{ __('site.nav.contact') }}</a>
@@ -192,7 +192,7 @@
                 <div class="col-lg-7">
                     <div class="row g-4">
                         @foreach ($advantages as $index => $advantage)
-                            <div class="col-sm-6" data-reveal style="--reveal-delay: {{ $index * 0.1 }}s">
+                            <div class="col-sm-6">
                                 <div class="d-flex gap-3">
                                     <span class="flex-shrink-0 d-inline-flex align-items-center justify-content-center bg-accent-subtle text-accent rounded-3" style="width: 48px; height: 48px;">
                                         <i class="bi bi-{{ $advantage['icon'] }} fs-4"></i>
@@ -213,10 +213,10 @@
     {{-- Étapes de réservation --}}
     <section class="py-5 bg-surface">
         <div class="container">
-            <h2 class="text-center fw-bold mb-5" data-reveal>{{ __('site.home.steps.title') }}</h2>
+            <h2 class="text-center fw-bold mb-5">{{ __('site.home.steps.title') }}</h2>
             <div class="row g-4 text-center">
                 @foreach ($steps as $index => $step)
-                    <div class="col-6 col-lg-3" data-reveal style="--reveal-delay: {{ $index * 0.12 }}s">
+                    <div class="col-6 col-lg-3">
                         <span class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle mb-3 position-relative" style="width: 64px; height: 64px;">
                             <i class="bi bi-{{ $step['icon'] }} fs-4"></i>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">{{ $index + 1 }}</span>
@@ -232,12 +232,12 @@
          Contenu d'exemple, gérable en back-office à partir de la phase 4. --}}
     <section class="py-5">
         <div class="container">
-            <div class="text-center mb-5" data-reveal>
+            <div class="text-center mb-5">
                 <h2 class="fw-bold mb-2">{{ __('site.home.testimonials.title') }}</h2>
                 <p class="text-muted">{{ __('site.home.testimonials.subtitle') }}</p>
             </div>
 
-            <div id="testimonialsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000" data-reveal="zoom">
+            <div id="testimonialsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
                 <div class="carousel-inner">
                     @foreach ($testimonials as $index => $testimonial)
                         <div @class(['carousel-item', 'active' => $index === 0])>
@@ -265,7 +265,7 @@
     {{-- Appel à l'action --}}
     <section class="pb-5">
         <div class="container">
-            <div class="float-soft rounded-4 p-4 p-md-5 text-center text-white" style="background: linear-gradient(120deg, var(--color-secondary), color-mix(in srgb, var(--color-primary), var(--color-secondary) 55%));" data-reveal>
+            <div class="float-soft rounded-4 p-4 p-md-5 text-center text-white" style="background: linear-gradient(120deg, var(--color-secondary), color-mix(in srgb, var(--color-primary), var(--color-secondary) 55%));">
                 <h2 class="h3 fw-bold mb-2">{{ setting('cta_title', __('site.home.cta.default_title')) }}</h2>
                 <p class="text-white-50 mb-4">{{ setting('cta_text', __('site.home.cta.default_text')) }}</p>
                 <a href="{{ route('vehicles.index', app()->getLocale()) }}" class="btn btn-light btn-lg px-4 text-primary fw-semibold">{{ __('site.home.cta.button') }}</a>
