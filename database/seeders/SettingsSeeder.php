@@ -30,10 +30,23 @@ class SettingsSeeder extends Seeder
             // Accueil
             'hero_title' => 'Louez une voiture en toute simplicité',
             'hero_subtitle' => 'Avec ou sans chauffeur, pour vos déplacements, mariages et événements. Réservation sans compte, règlement à l\'agence.',
-            'hero_image' => null,
+            // Diapositives du carrousel d'accueil : image (chemin public ou URL), titre et texte.
+            // Gérées par le Super Admin ; une diapo sans image utilise le dégradé par défaut.
+            'hero_slides' => json_encode([
+                ['image' => 'img/hero/pexels-vladalex94-1402787.jpg', 'title' => 'Louez une voiture en toute simplicité', 'text' => 'Avec ou sans chauffeur, pour vos déplacements, mariages et événements.'],
+                ['image' => 'img/hero/pexels-pavel-danilyuk-8425044.jpg', 'title' => 'Des véhicules récents et entretenus', 'text' => 'Une flotte variée : citadines, berlines, SUV et 4x4, prêts à partir.'],
+                ['image' => 'img/hero/pexels-cesarperez209-733745.jpg', 'title' => 'Votre chauffeur, votre programme', 'text' => 'Mariages, événements, déplacements professionnels : nous conduisons, vous profitez.'],
+                ['image' => 'img/hero/pexels-svjae-3752194.jpg', 'title' => 'Réservation rapide, sans compte', 'text' => 'Quelques clics, votre pièce d\'identité, et c\'est parti. Règlement à l\'agence.'],
+            ], JSON_UNESCAPED_UNICODE),
             'home_services_text' => 'Des formules pensées pour tous vos trajets.',
             'cta_title' => null,
             'cta_text' => null,
+
+            // Chiffres clés (compteurs animés de l'accueil)
+            'stats_vehicles' => '25',
+            'stats_clients' => '1200',
+            'stats_years' => '8',
+            'stats_satisfaction' => '98',
 
             // Pied de page et contact
             'footer_text' => 'Location de véhicules avec ou sans chauffeur, et mise à disposition de chauffeurs pour votre propre voiture.',

@@ -33,6 +33,9 @@ return [
         'navigation' => 'Navigation',
         'follow_us' => 'Suivez-nous',
         'all_rights_reserved' => 'Tous droits réservés.',
+        'slide' => 'Diapositive',
+        'previous' => 'Précédent',
+        'next' => 'Suivant',
     ],
 
     'admin' => [
@@ -43,6 +46,7 @@ return [
 
     'home' => [
         'search' => [
+            'title' => 'Trouvez votre véhicule',
             'pickup_date' => 'Date de prise',
             'return_date' => 'Date de retour',
             'formula' => 'Formule',
@@ -59,12 +63,30 @@ return [
             'driver_only_title' => 'Chauffeur seul',
             'driver_only_text' => 'Vous avez votre véhicule ? Nos chauffeurs conduisent pour vos courses, à la journée.',
         ],
+        'stats' => [
+            'vehicles' => 'Véhicules au garage',
+            'clients' => 'Clients satisfaits',
+            'years' => 'Années d\'expérience',
+            'satisfaction' => '% de satisfaction',
+        ],
+        'advantages' => [
+            'title' => 'Pourquoi nous choisir',
+            'subtitle' => 'Un service pensé pour vous simplifier la route.',
+            'insurance' => ['Assurance incluse', 'Tous nos véhicules sont couverts pendant toute la durée de la location.'],
+            'recent' => ['Véhicules récents', 'Une flotte entretenue et contrôlée régulièrement.'],
+            'assistance' => ['Assistance 24/7', 'Une équipe joignable à tout moment en cas de besoin.'],
+            'pricing' => ['Tarifs transparents', 'Le prix affiché est le prix payé, sans surprise à l\'agence.'],
+        ],
         'steps' => [
             'title' => 'Réserver en 4 étapes',
             'choose_dates' => 'Choisissez vos dates',
             'select_vehicle' => 'Sélectionnez le véhicule',
             'send_id' => 'Envoyez votre pièce d\'identité',
             'confirmation' => 'Recevez la confirmation',
+        ],
+        'testimonials' => [
+            'title' => 'Ils nous font confiance',
+            'subtitle' => 'Ce que disent nos clients de nos services.',
         ],
         'cta' => [
             'button' => 'Découvrir le garage',

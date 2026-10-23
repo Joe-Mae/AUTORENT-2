@@ -1,0 +1,188 @@
+//
+// Animations du site public : révélations au défilement, effet Ken Burns
+// du carrousel d'accueil, transitions des légendes et survols des cartes.
+// Désactivées si l'utilisateur préfère réduire les animations.
+//
+
+/* Révélation au défilement (déclenchée par data-reveal + IntersectionObserver).
+   L'état masqué n'est posé que si JS est actif (classe js-anim sur <html>). */
+
+html.js-anim [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    transition-delay: var(--reveal-delay, 0s);
+}
+
+html.js-anim [data-reveal="left"] { transform: translateX(-32px); }
+html.js-anim [data-reveal="right"] { transform: translateX(32px); }
+html.js-anim [data-reveal="zoom"] { transform: scale(0.92); }
+
+[data-reveal].revealed {
+    opacity: 1;
+    transform: none;
+}
+
+/* Carrousel d'accueil */
+
+.hero-carousel .carousel-item {
+    height: min(88vh, 640px);
+    min-height: 420px;
+    background: var(--color-secondary);
+}
+
+.hero-carousel .carousel-item img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Zoom lent pendant l'affichage de la diapo ; relancé à chaque activation */
+.hero-carousel .carousel-item.active img {
+    animation: ken-burns 7s ease-out forwards;
+}
+
+@keyframes ken-burns {
+    from { transform: scale(1); }
+    to { transform: scale(1.12); }
+}
+
+.hero-carousel .hero-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.25) 45%, rgba(0, 0, 0, 0.65) 100%);
+}
+
+/* Légendes : Bootstrap rebascle .active à chaque diapo, l'animation rejoue */
+
+.hero-carousel .hero-caption {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+}
+
+.hero-carousel .carousel-item.active .hero-caption > * {
+    animation: caption-in 0.8s ease both;
+}
+
+.hero-carousel .carousel-item.active .hero-caption > *:nth-child(2) { animation-delay: 0.15s; }
+.hero-carousel .carousel-item.active .hero-caption > *:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes caption-in {
+    from {
+        opacity: 0;
+        transform: translateY(26px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Indicateurs du carrousel en barres */
+
+.hero-carousel .carousel-indicators {
+    margin-bottom: 3.5rem;
+    gap: 0.4rem;
+}
+
+.hero-carousel .carousel-indicators [data-bs-target] {
+    width: 2.25rem;
+    height: 3px;
+    border: 0;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.45);
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.hero-carousel .carousel-indicators .active {
+    width: 3.5rem;
+    background-color: #fff;
+}
+
+.hero-carousel .carousel-control-prev,
+.hero-carousel .carousel-control-next {
+    width: 5%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 3;
+}
+
+.hero-carousel:hover .carousel-control-prev,
+.hero-carousel:hover .carousel-control-next {
+    opacity: 0.85;
+}
+
+/* Formulaire de recherche chevauchant le bas du carrousel */
+
+.search-card {
+    margin-top: -3.25rem;
+    position: relative;
+    z-index: 5;
+}
+
+/* Survol des cartes (services, véhicules, avantages) */
+
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 1.25rem 2rem rgba(0, 0, 0, 0.12) !important;
+}
+
+.service-icon {
+    transition: transform 0.35s ease, background-color 0.35s ease;
+}
+
+.card:hover .service-icon {
+    transform: rotate(-6deg) scale(1.08);
+}
+
+/* Images des cartes véhicules (utilisées dès la phase 4) */
+
+.card-img-zoom img {
+    transition: transform 0.5s ease;
+}
+
+.card-img-zoom:hover img {
+    transform: scale(1.07);
+}
+
+/* Léger flottement du bandeau d'appel à l'action */
+
+@keyframes float-y {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+}
+
+.float-soft {
+    animation: float-y 5s ease-in-out infinite;
+}
+
+/* Accessibilité : respecte « animations réduites » */
+
+@media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .hero-carousel .carousel-item.active img,
+    .hero-carousel .carousel-item.active .hero-caption > *,
+    .float-soft {
+        animation: none;
+    }
+
+    .hover-lift:hover,
+    .card:hover .service-icon,
+    .card-img-zoom:hover img {
+        transform: none;
+    }
+}
