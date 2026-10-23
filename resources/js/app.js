@@ -11,19 +11,29 @@ window.bootstrap = bootstrap;
 document.documentElement.classList.add('js-anim');
 
 // --- Révélation des sections au défilement ---
+//
+// Déclenchée par l'événement « scroll » + getBoundingClientRect, sans
+// IntersectionObserver ni requestAnimationFrame : ces API se mettent en
+// pause dans certains navigateurs embarqués (webviews), ce qui laissait
+// les sections invisibles.
 
-const revealObserver = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            revealObserver.unobserve(entry.target);
+const revealElements = [...document.querySelectorAll('[data-reveal]')];
+
+const revealNearViewport = () => {
+    const limit = window.innerHeight + 150;
+
+    for (const element of revealElements) {
+        if (element.classList.contains('revealed')) continue;
+
+        if (element.getBoundingClientRect().top < limit) {
+            element.classList.add('revealed');
         }
     }
-}, { threshold: 0.15 });
+};
 
-document.querySelectorAll('[data-reveal]').forEach((element) => {
-    revealObserver.observe(element);
-});
+window.addEventListener('scroll', revealNearViewport, { passive: true });
+window.addEventListener('resize', revealNearViewport, { passive: true });
+setTimeout(revealNearViewport, 50);
 
 // --- Compteurs animés (éléments [data-counter]) ---
 
@@ -43,18 +53,22 @@ const animateCounter = (element) => {
     requestAnimationFrame(tick);
 };
 
-const counterObserver = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-        if (entry.isIntersecting) {
-            animateCounter(entry.target);
-            counterObserver.unobserve(entry.target);
+const counterElements = [...document.querySelectorAll('[data-counter]')];
+
+const launchVisibleCounters = () => {
+    for (const element of counterElements) {
+        if (element.dataset.done) continue;
+
+        if (element.getBoundingClientRect().top < window.innerHeight + 100) {
+            element.dataset.done = '1';
+            animateCounter(element);
         }
     }
-}, { threshold: 0.4 });
+};
 
-document.querySelectorAll('[data-counter]').forEach((element) => {
-    counterObserver.observe(element);
-});
+window.addEventListener('scroll', launchVisibleCounters, { passive: true });
+window.addEventListener('resize', launchVisibleCounters, { passive: true });
+setTimeout(launchVisibleCounters, 50);
 
 // --- Barre de navigation : ombre renforcée après le haut de page ---
 

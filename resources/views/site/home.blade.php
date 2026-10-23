@@ -62,7 +62,7 @@
             @foreach ($slides as $index => $slide)
                 <div @class(['carousel-item', 'active' => $index === 0])>
                     @if ($url = $imageUrl($slide['image'] ?? null))
-                        <img src="{{ $url }}" alt="{{ $slide['title'] ?? setting('company_name') }}" loading="{{ $index === 0 ? 'eager' : 'lazy' }}" @if ($index === 0) fetchpriority="high" @endif>
+                        <img src="{{ $url }}" alt="{{ $slide['title'] ?? setting('company_name') }}" @if ($index === 0) fetchpriority="high" @endif>
                     @endif
                     <div class="hero-shade"></div>
 
