@@ -1,5 +1,7 @@
 //
-// Point d'entrée des styles : Bootstrap 5, icônes, surcharges et thème.
+// Point d'entrée des styles : Bootstrap 5 et surcharges du thème.
+// Les icônes Bootstrap sont importées dans app.js : Vite n'émet les
+// fichiers de police (woff2) que si le CSS passe par le pipeline JS.
 //
 
 @import 'variables';
@@ -7,4 +9,3 @@
 @import 'admin';
 
 @import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons';
