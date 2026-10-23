@@ -1,0 +1,133 @@
+//
+// Thème dynamique : les couleurs de l'entreprise sont injectées dans les
+// variables CSS --color-* par la partial « theme » (valeurs des settings).
+// Ces valeurs par défaut ne servent que de repli si un réglage manque.
+//
+
+:root {
+    --color-primary: #d95319;
+    --color-primary-rgb: 217, 83, 25;
+    --color-secondary: #14213d;
+    --color-accent: #2a9d8f;
+    --color-body: #212529;
+    --color-surface: #f6f7f9;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--color-primary);
+    --bs-btn-border-color: var(--color-primary);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--color-primary), black 12%);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--color-primary), black 12%);
+    --bs-btn-active-bg: color-mix(in srgb, var(--color-primary), black 20%);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--color-primary), black 20%);
+    --bs-btn-disabled-bg: var(--color-primary);
+    --bs-btn-disabled-border-color: var(--color-primary);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--color-primary);
+    --bs-btn-border-color: var(--color-primary);
+    --bs-btn-hover-bg: var(--color-primary);
+    --bs-btn-hover-border-color: var(--color-primary);
+    --bs-btn-active-bg: var(--color-primary);
+    --bs-btn-active-border-color: var(--color-primary);
+    --bs-btn-disabled-color: var(--color-primary);
+    --bs-btn-disabled-border-color: var(--color-primary);
+}
+
+.btn-secondary {
+    --bs-btn-bg: var(--color-secondary);
+    --bs-btn-border-color: var(--color-secondary);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--color-secondary), black 12%);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--color-secondary), black 12%);
+    --bs-btn-active-bg: color-mix(in srgb, var(--color-secondary), black 20%);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--color-secondary), black 20%);
+    --bs-btn-disabled-bg: var(--color-secondary);
+    --bs-btn-disabled-border-color: var(--color-secondary);
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: var(--color-secondary);
+    --bs-btn-border-color: var(--color-secondary);
+    --bs-btn-hover-bg: var(--color-secondary);
+    --bs-btn-hover-border-color: var(--color-secondary);
+    --bs-btn-active-bg: var(--color-secondary);
+    --bs-btn-active-border-color: var(--color-secondary);
+    --bs-btn-disabled-color: var(--color-secondary);
+    --bs-btn-disabled-border-color: var(--color-secondary);
+}
+
+.btn-accent {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--color-accent);
+    --bs-btn-border-color: var(--color-accent);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--color-accent), black 12%);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--color-accent), black 12%);
+    --bs-btn-active-bg: color-mix(in srgb, var(--color-accent), black 20%);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--color-accent), black 20%);
+    --bs-btn-disabled-bg: var(--color-accent);
+    --bs-btn-disabled-border-color: var(--color-accent);
+}
+
+.text-primary { color: var(--color-primary) !important; }
+.text-secondary { color: var(--color-secondary) !important; }
+.text-accent { color: var(--color-accent) !important; }
+.bg-primary { background-color: var(--color-primary) !important; }
+.bg-secondary { background-color: var(--color-secondary) !important; }
+.bg-accent { background-color: var(--color-accent) !important; }
+.bg-surface { background-color: var(--color-surface) !important; }
+.border-primary { border-color: var(--color-primary) !important; }
+
+a { color: var(--color-primary); }
+
+.form-control:focus,
+.form-select:focus {
+    border-color: color-mix(in srgb, var(--color-primary), white 30%);
+    box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--color-primary), transparent 80%);
+}
+
+.form-check-input:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.form-check-input:focus {
+    border-color: color-mix(in srgb, var(--color-primary), white 30%);
+    box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--color-primary), transparent 80%);
+}
+
+.navbar-public {
+    background-color: #fff;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+
+.navbar-public .nav-link {
+    font-weight: 500;
+    color: var(--color-body);
+}
+
+.navbar-public .nav-link.active {
+    color: var(--color-primary);
+}
+
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:active {
+    background-color: var(--color-primary);
+}
+
+.page-link {
+    color: var(--color-secondary);
+
+    &:hover { color: var(--color-primary); }
+}
+
+.page-item.active .page-link {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.accordion-button:not(.collapsed) {
+    color: var(--color-secondary);
+    background-color: color-mix(in srgb, var(--color-accent), white 92%);
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+}
