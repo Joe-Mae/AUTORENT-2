@@ -31,16 +31,17 @@ class VehicleController extends Controller
             ->when($filters['price_max'] ?? null, fn ($q, $max) => $q->where('daily_price', '<=', $max));
 
         // Disponibilité sur des dates : on exclut les véhicules déjà
-        // réservés (confirmés/en cours) ou bloqués en maintenance.
+        // réservés ou bloqués en maintenance (règle §5.4 configurable).
         if (! empty($filters['pickup_date']) && ! empty($filters['return_date'])) {
             $pickup = $filters['pickup_date'].' 00:00:00';
             $return = $filters['return_date'].' 23:59:59';
+            $blockingStatuses = $this->availability->blockingStatuses();
 
-            $query->whereNotExists(function ($sub) use ($pickup, $return): void {
+            $query->whereNotExists(function ($sub) use ($pickup, $return, $blockingStatuses): void {
                 $sub->selectRaw(1)
                     ->from('reservations')
                     ->whereColumn('reservations.vehicle_id', 'vehicles.id')
-                    ->whereIn('reservations.status', ['confirmed', 'ongoing'])
+                    ->whereIn('reservations.status', $blockingStatuses)
                     ->where('reservations.starts_at', '<', $return)
                     ->where('reservations.ends_at', '>', $pickup);
             })->whereNotExists(function ($sub) use ($pickup, $return): void {

@@ -67,7 +67,9 @@ class Reservation extends Model
 
     public function statusHistories(): HasMany
     {
-        return $this->hasMany(ReservationStatusHistory::class)->latest('created_at');
+        // Tri par id : deux transitions dans la même seconde gardent
+        // leur ordre réel (le tri par date serait ambigu).
+        return $this->hasMany(ReservationStatusHistory::class)->latest('id');
     }
 
     /* --- Présentation --- */
@@ -91,10 +93,13 @@ class Reservation extends Model
 
     public function scopeBlocking(Builder $query): Builder
     {
-        return $query->whereIn('status', [
-            ReservationStatus::Confirmed,
-            ReservationStatus::Ongoing,
-        ]);
+        $statuses = [ReservationStatus::Confirmed, ReservationStatus::Ongoing];
+
+        if (setting('pending_blocks_vehicle', '0') === '1') {
+            $statuses[] = ReservationStatus::Pending;
+        }
+
+        return $query->whereIn('status', $statuses);
     }
 
     /**

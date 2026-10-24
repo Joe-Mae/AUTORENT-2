@@ -13,10 +13,27 @@ use Illuminate\Support\Carbon;
  *
  * Règle métier (spécification §5.4) : seules les réservations confirmées
  * ou en cours bloquent un véhicule, ainsi que les périodes de maintenance.
- * Cette règle reste modifiable côté serveur en un seul endroit.
+ * Le réglage « pending_blocks_vehicle » du Super Admin étend le blocage
+ * aux demandes en attente : tout est centralisé ici.
  */
 class AvailabilityService
 {
+    /**
+     * Statuts qui bloquent la disponibilité, selon le réglage du back-office.
+     *
+     * @return array<int, ReservationStatus>
+     */
+    public function blockingStatuses(): array
+    {
+        $statuses = [ReservationStatus::Confirmed, ReservationStatus::Ongoing];
+
+        if (setting('pending_blocks_vehicle', '0') === '1') {
+            $statuses[] = ReservationStatus::Pending;
+        }
+
+        return $statuses;
+    }
+
     public function isAvailable(Vehicle $vehicle, DateTimeInterface $startsAt, DateTimeInterface $endsAt): bool
     {
         if ($vehicle->status?->value !== 'available') {
@@ -44,7 +61,7 @@ class AvailabilityService
         $dates = [];
 
         $reservations = $vehicle->reservations()
-            ->whereIn('status', [ReservationStatus::Confirmed, ReservationStatus::Ongoing])
+            ->whereIn('status', $this->blockingStatuses())
             ->where('starts_at', '<', $to)
             ->where('ends_at', '>', $from)
             ->get();
@@ -68,8 +85,9 @@ class AvailabilityService
     private function hasBlockingReservation(Vehicle $vehicle, DateTimeInterface $startsAt, DateTimeInterface $endsAt): bool
     {
         return $vehicle->reservations()
-            ->blocking()
-            ->overlapping($startsAt, $endsAt)
+            ->whereIn('status', $this->blockingStatuses())
+            ->where('starts_at', '<', $endsAt)
+            ->where('ends_at', '>', $startsAt)
             ->exists();
     }
 

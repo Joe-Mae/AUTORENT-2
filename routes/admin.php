@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DriverController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReservationController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VehicleCategoryController;
@@ -103,4 +106,14 @@ Route::middleware('auth')->group(function (): void {
     Route::get('reports', [ReportController::class, 'index'])->middleware('can:reports.view')->name('reports.index');
     Route::get('reports/export/csv', [ReportController::class, 'exportCsv'])->middleware('can:reports.view')->name('reports.export-csv');
     Route::get('reports/export/pdf', [ReportController::class, 'exportPdf'])->middleware('can:reports.view')->name('reports.export-pdf');
+
+    // Identité, apparence, tarifs et paramètres : Super Admin uniquement.
+    Route::middleware('can:settings.manage')->group(function (): void {
+        Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
+        Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
+        Route::resource('pages', PageController::class)->except(['show']);
+    });
+
+    // Journal d'activité : Super Admin uniquement.
+    Route::get('audit', [AuditLogController::class, 'index'])->middleware('can:audit.view')->name('audit.index');
 });

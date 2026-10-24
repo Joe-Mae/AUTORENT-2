@@ -10,6 +10,7 @@
         ['route' => 'admin.drivers.index', 'icon' => 'person-badge', 'label' => 'Chauffeurs', 'can' => 'drivers.view'],
         ['route' => 'admin.reports.index', 'icon' => 'graph-up-arrow', 'label' => 'Rapports', 'can' => 'reports.view'],
         ['route' => 'admin.users.index', 'icon' => 'people', 'label' => 'Utilisateurs', 'can' => 'users.manage_cashiers'],
+        ['route' => 'admin.audit.index', 'icon' => 'clock-history', 'label' => 'Journal d\'activité', 'can' => 'audit.view'],
         ['route' => 'admin.settings.index', 'icon' => 'gear', 'label' => 'Paramètres', 'can' => 'settings.manage'],
     ];
 

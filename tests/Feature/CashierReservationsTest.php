@@ -108,11 +108,11 @@ class CashierReservationsTest extends TestCase
         $this->assertSame('completed', $this->reservation->fresh()->status->value);
 
         // Chaque étape est historisée, attribuée à la caissière, avec les notes.
-        $histories = $this->reservation->fresh()->statusHistories()->orderBy('id')->get();
+        $histories = $this->reservation->fresh()->statusHistories()->get();
         $this->assertCount(4, $histories);
         $this->assertTrue($histories->every(fn ($history) => $history->user_id === $this->cashier->id));
-        $this->assertSame(55_110, (int) $histories->last()->properties['mileage']);
-        $this->assertSame('Rayure pare-choc avant', $histories->last()->properties['damages']);
+        $this->assertSame(55_110, (int) $histories->first()->properties['mileage']);
+        $this->assertSame('Rayure pare-choc avant', $histories->first()->properties['damages']);
     }
 
     public function test_confirm_skips_identity_verification_is_rejected(): void
