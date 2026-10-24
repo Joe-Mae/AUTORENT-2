@@ -22,9 +22,14 @@ class VehicleImage extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
+    /**
+     * URL relative à la requête courante : fonctionne quel que soit le
+     * domaine de l'entreprise (marque blanche), contrairement à l'URL
+     * absolue du disque qui dépend de APP_URL.
+     */
     public function url(): string
     {
-        return Storage::disk('public')->url($this->path);
+        return asset('storage/'.$this->path);
     }
 
     protected static function booted(): void

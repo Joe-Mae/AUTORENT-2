@@ -36,6 +36,10 @@ return [
         'slide' => 'Diapositive',
         'previous' => 'Précédent',
         'next' => 'Suivant',
+        'legal' => 'Pages légales',
+        'terms' => 'Conditions de location',
+        'privacy' => 'Confidentialité',
+        'legal_notice' => 'Mentions légales',
     ],
 
     'admin' => [
@@ -110,17 +114,73 @@ return [
             'default_title' => 'Prêt à partir ?',
             'default_text' => 'Consultez notre garage et réservez en quelques minutes.',
         ],
+        'featured_title' => 'Véhicules en vedette',
+        'featured_subtitle' => 'Un aperçu de notre flotte, maintenue et contrôlée régulièrement.',
+        'view_all_vehicles' => 'Voir tout le garage',
     ],
 
     'vehicles' => [
         'title' => 'Notre garage',
         'subtitle' => 'Trouvez le véhicule adapté à vos besoins et à votre budget.',
-        'coming_soon' => 'Le catalogue des véhicules arrive avec la prochaine phase du site.',
+        'results' => ':count véhicule(s) disponible(s)',
+        'view' => 'Voir et réserver',
+        'empty' => 'Aucun véhicule ne correspond à ces critères. Essayez d\'élargir vos filtres.',
+        'description' => 'Description',
+        'availability' => 'Disponibilité',
+        'legend_unavailable' => 'Déjà réservé ou indisponible',
+        'price_from' => 'Tarif',
+        'payment_agency' => 'Paiement à l\'agence, aucun paiement en ligne.',
+        'license_reminder' => 'Présentez-vous à l\'agence avec votre permis de conduire valide.',
+        'similar' => 'Véhicules similaires',
+        'sort_label' => 'Trier par',
+        'sort' => [
+            'year_desc' => 'Plus récents',
+            'price_asc' => 'Prix croissant',
+            'price_desc' => 'Prix décroissant',
+            'brand_asc' => 'Marque (A-Z)',
+        ],
+        'filters_title' => 'Filtres',
+        'filters' => [
+            'category' => 'Catégorie',
+            'brand' => 'Marque',
+            'seats' => 'Places',
+            'seats_any' => 'Toutes',
+            'transmission' => 'Boîte',
+            'fuel' => 'Carburant',
+            'price_min' => 'Prix min (FCFA)',
+            'price_max' => 'Prix max (FCFA)',
+            'all' => 'Tous',
+            'reset' => 'Réinitialiser',
+        ],
+        'transmission' => [
+            'automatic' => 'Automatique',
+            'manual' => 'Manuelle',
+        ],
     ],
 
     'driver_service' => [
         'title' => 'Location avec chauffeur',
         'subtitle' => 'Deux formules : la voiture avec son chauffeur, ou le chauffeur seul pour votre propre véhicule.',
+        'car_with_driver' => 'Voiture + chauffeur',
+        'car_with_driver_text' => 'Choisissez un véhicule de notre flotte, nous fournissons le chauffeur. Idéal si vous préférez vous asseoir à l\'arrière.',
+        'per_day_supplement' => 'Supplément ajouté au tarif du véhicule choisi.',
+        'choose_vehicle' => 'Choisir un véhicule',
+        'driver_only' => 'Chauffeur seul',
+        'driver_only_text' => 'Vous avez déjà votre véhicule ? Nos chauffeurs conduisent pour vos courses et déplacements, à la journée.',
+        'discount' => 'Tarif réduit à :price / jour dès :days jours de location',
+        'ask_driver' => 'Demander un chauffeur',
+        'use_cases_title' => 'Pour quelles occasions ?',
+        'use_cases' => [
+            'wedding' => 'Mariages',
+            'wedding_text' => 'Conduire les mariés et leurs proches, avec ponctualité et élégance.',
+            'event' => 'Événements',
+            'event_text' => 'Baptêmes, anniversaires, cérémonies : vos invités arrivent à l\'heure.',
+            'business' => 'Déplacements pro',
+            'business_text' => 'Réunions, aéroport, représentation : un chauffeur discret et fiable.',
+            'errands' => 'Courses et démarches',
+            'errands_text' => 'Vos courses, vos rendez-vous : on vous conduit et on vous attend.',
+        ],
+        'cta_text' => 'Parlons de votre besoin : nous trouvons la formule adaptée.',
     ],
 
     'check_booking' => [
@@ -131,6 +191,8 @@ return [
     'faq' => [
         'title' => 'Questions fréquentes',
         'subtitle' => 'Les réponses aux questions que l\'on nous pose le plus souvent.',
+        'empty' => 'Les questions fréquentes seront bientôt disponibles.',
+        'other_question' => 'Une autre question ?',
     ],
 
     'contact' => [
@@ -141,6 +203,15 @@ return [
         'phone' => 'Téléphone',
         'message' => 'Message',
         'send' => 'Envoyer le message',
+        'address' => 'Adresse',
+        'hours' => 'Horaires',
+        'thanks' => 'Votre message a bien été envoyé. Nous vous répondrons rapidement.',
+    ],
+
+    'booking' => [
+        'title' => 'Réserver en ligne',
+        'coming_soon' => 'Le parcours de réservation complet (formulaire, pièce d\'identité, calcul du prix et code de réservation) arrive à l\'étape suivante. En attendant, contactez-nous directement.',
+        'back_to_vehicle' => 'Retour au véhicule',
     ],
 
 ];

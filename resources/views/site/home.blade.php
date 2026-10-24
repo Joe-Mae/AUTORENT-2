@@ -37,12 +37,6 @@
         ['icon' => 'person-vcard', 'label' => __('site.home.steps.send_id')],
         ['icon' => 'patch-check', 'label' => __('site.home.steps.confirmation')],
     ];
-
-    $testimonials = [
-        ['quote' => 'Voiture impeccable et disponible au bon moment. Le chauffeur pour notre mariage a été très professionnel.', 'author' => 'Aïcha D.', 'role' => __('Mariage à Cotonou')],
-        ['quote' => 'Réservation simple sans créer de compte, confirmation rapide. Je recommande pour les déplacements professionnels.', 'author' => 'Kossi A.', 'role' => __('Déplacement professionnel')],
-        ['quote' => 'Tarifs clairs et véhicule propre. L\'équipe de l\'agence explique tout calmement, rien à redire.', 'author' => 'Fatou B.', 'role' => __('Location week-end')],
-    ];
 @endphp
 
 @extends('layouts.public')
@@ -165,6 +159,29 @@
         </div>
     </section>
 
+    {{-- Véhicules en vedette (base de données) --}}
+    @if ($featuredVehicles->isNotEmpty())
+        <section class="py-5 bg-surface">
+            <div class="container">
+                <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1">{{ __('site.home.featured_title') }}</h2>
+                        <p class="text-muted mb-0">{{ __('site.home.featured_subtitle') }}</p>
+                    </div>
+                    <a href="{{ route('vehicles.index', app()->getLocale()) }}" class="btn btn-outline-primary btn-sm">{{ __('site.home.view_all_vehicles') }}</a>
+                </div>
+
+                <div class="row g-4">
+                    @foreach ($featuredVehicles as $vehicle)
+                        <div class="col-6 col-lg-3">
+                            @include('site.vehicles.card', ['vehicle' => $vehicle])
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
     {{-- Chiffres clés animés --}}
     <section class="py-5 bg-secondary text-white">
         <div class="container">
@@ -228,39 +245,40 @@
         </div>
     </section>
 
-    {{-- Témoignages : deuxième diaporama, défilement automatique.
-         Contenu d'exemple, gérable en back-office à partir de la phase 4. --}}
-    <section class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold mb-2">{{ __('site.home.testimonials.title') }}</h2>
-                <p class="text-muted">{{ __('site.home.testimonials.subtitle') }}</p>
-            </div>
-
-            <div id="testimonialsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
-                <div class="carousel-inner">
-                    @foreach ($testimonials as $index => $testimonial)
-                        <div @class(['carousel-item', 'active' => $index === 0])>
-                            <figure class="text-center mx-auto mb-4" style="max-width: 640px;">
-                                <i class="bi bi-quote fs-1 text-primary"></i>
-                                <blockquote class="fs-5 fst-italic text-secondary mb-3">« {{ $testimonial['quote'] }} »</blockquote>
-                                <div class="text-warning small mb-2">
-                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                                </div>
-                                <figcaption class="fw-bold">{{ $testimonial['author'] }} <span class="text-muted fw-normal">· {{ $testimonial['role'] }}</span></figcaption>
-                            </figure>
-                        </div>
-                    @endforeach
+    {{-- Témoignages : deuxième diaporama, défilement automatique, gérés en back-office --}}
+    @if ($testimonials->isNotEmpty())
+        <section class="py-5">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold mb-2">{{ __('site.home.testimonials.title') }}</h2>
+                    <p class="text-muted">{{ __('site.home.testimonials.subtitle') }}</p>
                 </div>
 
-                <div class="carousel-indicators position-static">
-                    @foreach ($testimonials as $index => $testimonial)
-                        <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="{{ $index }}" @class(['active' => $index === 0]) aria-current="{{ $index === 0 ? 'true' : 'false' }}" aria-label="{{ __('site.common.slide') }} {{ $index + 1 }}"></button>
-                    @endforeach
+                <div id="testimonialsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+                    <div class="carousel-inner">
+                        @foreach ($testimonials as $index => $testimonial)
+                            <div @class(['carousel-item', 'active' => $index === 0])>
+                                <figure class="text-center mx-auto mb-4" style="max-width: 640px;">
+                                    <i class="bi bi-quote fs-1 text-primary"></i>
+                                    <blockquote class="fs-5 fst-italic text-secondary mb-3">« {{ $testimonial->content }} »</blockquote>
+                                    <div class="text-warning small mb-2">
+                                        @for ($star = 0; $star < $testimonial->rating; $star++)<i class="bi bi-star-fill"></i>@endfor
+                                    </div>
+                                    <figcaption class="fw-bold">{{ $testimonial->author_name }} <span class="text-muted fw-normal">· {{ $testimonial->context }}</span></figcaption>
+                                </figure>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="carousel-indicators position-static">
+                        @foreach ($testimonials as $index => $testimonial)
+                            <button type="button" data-bs-target="#testimonialsCarousel" data-bs-slide-to="{{ $index }}" @class(['active' => $index === 0]) aria-current="{{ $index === 0 ? 'true' : 'false' }}" aria-label="{{ __('site.common.slide') }} {{ $index + 1 }}"></button>
+                        @endforeach
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
     {{-- Appel à l'action --}}
     <section class="pb-5">

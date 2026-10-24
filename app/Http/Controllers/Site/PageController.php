@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
+use App\Models\Faq;
+use App\Models\Page;
 use Illuminate\View\View;
 
 /**
- * Pages statiques du site public. Les contenus éditoriaux viennent
- * des settings ; les pages alimentées par des modèles (véhicules,
- * FAQ…) basculeront sur leurs contrôleurs dédiés dans les phases 4+.
+ * Pages du site public alimentées par les contenus (FAQ, pages légales).
+ * Les formules « chauffeur » affichent les tarifs des settings.
  */
 class PageController extends Controller
 {
@@ -24,11 +25,18 @@ class PageController extends Controller
 
     public function faq(): View
     {
-        return view('site.faq');
+        return view('site.faq', [
+            'faqs' => Faq::active()->get(),
+        ]);
     }
 
     public function contact(): View
     {
         return view('site.contact');
+    }
+
+    public function page(Page $page): View
+    {
+        return view('site.page', ['page' => $page]);
     }
 }

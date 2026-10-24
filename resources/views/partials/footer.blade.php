@@ -51,11 +51,16 @@
 
         <div class="d-flex flex-column flex-md-row justify-content-between gap-2 small text-white-50">
             <span>&copy; {{ date('Y') }} {{ setting('company_name') }}. {{ __('site.common.all_rights_reserved') }}</span>
-            @if (setting('contact_whatsapp'))
-                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp')) }}" target="_blank" rel="noopener" class="text-white-50 text-decoration-none">
-                    <i class="bi bi-whatsapp me-1"></i>{{ __('site.common.whatsapp') }}
-                </a>
-            @endif
+            <nav class="d-flex flex-wrap gap-3" aria-label="{{ __('site.common.legal') }}">
+                @foreach (['conditions-de-location' => __('site.common.terms'), 'confidentialite' => __('site.common.privacy'), 'mentions-legales' => __('site.common.legal_notice')] as $slug => $label)
+                    <a href="{{ route('page', ['locale' => app()->getLocale(), 'page' => $slug]) }}" class="text-white-50 text-decoration-none">{{ $label }}</a>
+                @endforeach
+                @if (setting('contact_whatsapp'))
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp')) }}" target="_blank" rel="noopener" class="text-white-50 text-decoration-none">
+                        <i class="bi bi-whatsapp me-1"></i>{{ __('site.common.whatsapp') }}
+                    </a>
+                @endif
+            </nav>
         </div>
     </div>
 </footer>
