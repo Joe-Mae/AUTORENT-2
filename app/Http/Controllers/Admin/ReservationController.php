@@ -4,15 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\DocumentType;
 use App\Enums\ReservationStatus;
+use App\Enums\ReservationType;
 use App\Http\Controllers\Controller;
+use App\Mail\ReservationCancelled;
 use App\Mail\ReservationConfirmed;
 use App\Mail\ReservationRejected;
 use App\Models\ActivityLog;
+use App\Models\Driver;
 use App\Models\Reservation;
 use App\Models\ReservationDocument;
 use App\Models\Vehicle;
+use App\Services\AvailabilityService;
+use App\Services\PricingService;
+use App\Services\ReservationService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -41,6 +48,12 @@ class ReservationController extends Controller
         'handover' => ['confirmed' => ReservationStatus::Ongoing],
         'return' => ['ongoing' => ReservationStatus::Completed],
     ];
+
+    public function __construct(
+        private readonly PricingService $pricing,
+        private readonly AvailabilityService $availability,
+        private readonly ReservationService $reservations,
+    ) {}
 
     public function index(Request $request): View
     {
@@ -185,6 +198,192 @@ class ReservationController extends Controller
 
         return Pdf::loadView('pdf.reservation', ['reservation' => $reservation])
             ->download($reservation->code.'.pdf');
+    }
+
+    /**
+     * Création manuelle pour un client venu à l'agence (§6.2) : le
+     * client est présent, sa demande naît directement confirmée.
+     */
+    public function create(Request $request): View
+    {
+        return view('admin.reservations.form', [
+            'reservation' => new Reservation(['type' => 'vehicle', 'status' => ReservationStatus::Confirmed]),
+            'vehicles' => Vehicle::available()->with('category')->orderBy('brand')->get(),
+            'drivers' => Driver::active()->orderBy('full_name')->get(),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'type' => ['required', 'in:vehicle,vehicle_with_driver,driver_only'],
+            'vehicle_id' => ['required_unless:type,driver_only', 'exists:vehicles,id'],
+            'driver_id' => ['nullable', 'exists:drivers,id'],
+            'first_name' => ['required', 'string', 'max:120'],
+            'last_name' => ['required', 'string', 'max:120'],
+            'phone' => ['required', 'string', 'max:30'],
+            'email' => ['required', 'email', 'max:190'],
+            'starts_at' => ['required', 'date', 'after_or_equal:today'],
+            'ends_at' => ['required', 'date', 'after:starts_at'],
+            'pickup_location' => ['nullable', 'string', 'max:190'],
+            'internal_notes' => ['nullable', 'string', 'max:2000'],
+            'client_vehicle_brand' => ['required_if:type,driver_only', 'nullable', 'string', 'max:120'],
+            'client_vehicle_plate' => ['required_if:type,driver_only', 'nullable', 'string', 'max:30'],
+        ]);
+
+        $type = ReservationType::from($validated['type']);
+        $vehicle = isset($validated['vehicle_id'])
+            ? Vehicle::available()->findOrFail($validated['vehicle_id'])
+            : null;
+
+        $startsAt = Carbon::parse($validated['starts_at']);
+        $endsAt = Carbon::parse($validated['ends_at']);
+
+        if ($vehicle && ! $this->availability->isAvailable($vehicle, $startsAt, $endsAt)) {
+            return back()->withInput()->with('error', __('site.booking.errors.vehicle_unavailable'));
+        }
+
+        if (! empty($validated['driver_id']) && ! $this->driverIsAvailable($validated['driver_id'], $validated['starts_at'], $validated['ends_at'])) {
+            return back()->withInput()->with('error', __('site.admin.reservations.driver_unavailable'));
+        }
+
+        $quote = $this->pricing->quote($type, $vehicle, $startsAt, $endsAt);
+
+        $reservation = Reservation::create($validated + [
+            'code' => $this->reservations->generateCode(),
+            'days_count' => $quote['days'],
+            'vehicle_daily_price' => $quote['vehicle_daily_price'],
+            'driver_daily_price' => $quote['driver_daily_price'],
+            'total_price' => $quote['total_price'],
+            'currency' => setting('currency', 'FCFA'),
+            'status' => ReservationStatus::Confirmed,
+            'consent_accepted_at' => now(), // client présent à l'agence
+        ]);
+
+        $reservation->statusHistories()->create([
+            'from_status' => null,
+            'to_status' => ReservationStatus::Confirmed->value,
+            'user_id' => $request->user()->id,
+            'note' => __('site.admin.reservations.created_at_agency'),
+        ]);
+
+        return redirect()->route('admin.reservations.show', $reservation)->with('status', __('site.admin.reservations.created_ok'));
+    }
+
+    public function edit(Reservation $reservation): View
+    {
+        return view('admin.reservations.form', [
+            'reservation' => $reservation,
+            'vehicles' => Vehicle::available()->with('category')->orderBy('brand')->get(),
+            'drivers' => Driver::active()->orderBy('full_name')->get(),
+        ]);
+    }
+
+    /**
+     * Modification des dates et informations ; le prix et la
+     * disponibilité sont recalculés côté serveur.
+     */
+    public function update(Request $request, Reservation $reservation)
+    {
+        $validated = $request->validate([
+            'starts_at' => ['required', 'date'],
+            'ends_at' => ['required', 'date', 'after:starts_at'],
+            'pickup_location' => ['nullable', 'string', 'max:190'],
+            'internal_notes' => ['nullable', 'string', 'max:2000'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        if ($reservation->vehicle_id
+            && Reservation::blocking()
+                ->where('vehicle_id', $reservation->vehicle_id)
+                ->whereKeyNot($reservation->id)
+                ->overlapping($validated['starts_at'], $validated['ends_at'])
+                ->exists()) {
+            return back()->withInput()->with('error', __('site.booking.errors.vehicle_unavailable'));
+        }
+
+        $quote = $this->pricing->quote(
+            $reservation->type,
+            $reservation->vehicle,
+            Carbon::parse($validated['starts_at']),
+            Carbon::parse($validated['ends_at']),
+        );
+
+        $reservation->update($validated + [
+            'days_count' => $quote['days'],
+            'vehicle_daily_price' => $quote['vehicle_daily_price'],
+            'driver_daily_price' => $quote['driver_daily_price'],
+            'total_price' => $quote['total_price'],
+        ]);
+
+        ActivityLog::create([
+            'user_id' => $request->user()->id,
+            'action' => 'reservation.updated',
+            'description' => $reservation->code,
+        ]);
+
+        return redirect()->route('admin.reservations.show', $reservation)->with('status', __('site.admin.reservations.updated_ok'));
+    }
+
+    /**
+     * Annulation avec notification au client (§9).
+     */
+    public function cancel(Request $request, Reservation $reservation)
+    {
+        abort_if($reservation->status->isTerminal(), 422, __('site.admin.reservations.invalid_transition'));
+
+        $note = $request->input('note');
+        $from = $reservation->status;
+        $reservation->update(['status' => ReservationStatus::Cancelled]);
+
+        $reservation->statusHistories()->create([
+            'from_status' => $from->value,
+            'to_status' => ReservationStatus::Cancelled->value,
+            'user_id' => $request->user()->id,
+            'note' => $note,
+        ]);
+
+        Mail::to($reservation->email)->queue(new ReservationCancelled($reservation, $note));
+
+        return back()->with('status', __('site.admin.reservations.cancelled'));
+    }
+
+    /**
+     * Affectation d'un chauffeur, avec contrôle anti double-booking (§5.4).
+     */
+    public function assignDriver(Request $request, Reservation $reservation)
+    {
+        $validated = $request->validate([
+            'driver_id' => ['nullable', 'exists:drivers,id'],
+        ]);
+
+        if (! empty($validated['driver_id'])
+            && ! $this->driverIsAvailable($validated['driver_id'], $reservation->starts_at, $reservation->ends_at, $reservation->id)) {
+            return back()->with('error', __('site.admin.reservations.driver_unavailable'));
+        }
+
+        $reservation->update(['driver_id' => $validated['driver_id'] ?: null]);
+
+        ActivityLog::create([
+            'user_id' => $request->user()->id,
+            'action' => 'reservation.driver_assigned',
+            'description' => $reservation->code.' → driver #'.$reservation->driver_id,
+        ]);
+
+        return back()->with('status', __('site.admin.reservations.driver_assigned'));
+    }
+
+    /**
+     * Un chauffeur ne peut pas être affecté à deux réservations
+     * bloquantes qui se chevauchent.
+     */
+    private function driverIsAvailable(int $driverId, string $startsAt, string $endsAt, ?int $ignoreReservationId = null): bool
+    {
+        return ! Reservation::blocking()
+            ->where('driver_id', $driverId)
+            ->when($ignoreReservationId, fn ($query, $id) => $query->whereKeyNot($id))
+            ->overlapping($startsAt, $endsAt)
+            ->exists();
     }
 
     /**

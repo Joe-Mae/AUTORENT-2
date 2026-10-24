@@ -70,7 +70,7 @@ class ReservationService
             }
 
             $reservation = Reservation::create([
-                'code' => $this->nextCode(),
+                'code' => $this->generateCode(),
                 'type' => $type,
                 'vehicle_id' => $vehicle?->id,
                 'first_name' => $data['first_name'],
@@ -138,9 +138,9 @@ class ReservationService
     /**
      * Code de réservation séquentiel : PDJ-2026-000123.
      * Le préfixe vient des settings ; l'unicité est garantie par l'index
-     * unique et une boucle de réessai en cas de collision.
+     * unique. À appeler dans une transaction pour éviter les collisions.
      */
-    private function nextCode(): string
+    public function generateCode(): string
     {
         $prefix = setting('reservation_code_prefix', 'PDJ');
         $year = now()->year;

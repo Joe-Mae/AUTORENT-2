@@ -1,8 +1,16 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DriverController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReservationController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VehicleCategoryController;
+use App\Http\Controllers\Admin\VehicleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,5 +54,53 @@ Route::middleware('auth')->group(function (): void {
             ->middleware('can:reservations.update_status')->name('reservations.handover');
         Route::post('reservations/{reservation}/return', [ReservationController::class, 'returnVehicle'])
             ->middleware('can:reservations.update_status')->name('reservations.return');
+
+        // Gestion complète (gestionnaire) : création manuelle, modification,
+        // annulation, affectation d'un chauffeur.
+        Route::middleware('can:reservations.manage')->group(function (): void {
+            Route::get('reservations-create', [ReservationController::class, 'create'])->name('reservations.create');
+            Route::post('reservations', [ReservationController::class, 'store'])->name('reservations.store');
+            Route::get('reservations/{reservation}/edit', [ReservationController::class, 'edit'])->name('reservations.edit');
+            Route::put('reservations/{reservation}', [ReservationController::class, 'update'])->name('reservations.update');
+            Route::post('reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');
+            Route::post('reservations/{reservation}/driver', [ReservationController::class, 'assignDriver'])->name('reservations.assign-driver');
+        });
     });
+
+    // Flotte (gestionnaire).
+    Route::middleware('can:vehicles.manage')->group(function (): void {
+        Route::resource('vehicles', VehicleController::class)->except(['show']);
+        Route::delete('vehicle-images/{image}', [VehicleController::class, 'destroyImage'])->name('vehicle-images.destroy');
+        Route::post('vehicle-images/{image}/primary', [VehicleController::class, 'makePrimary'])->name('vehicle-images.primary');
+        Route::delete('vehicle-blocked-periods/{period}', [VehicleController::class, 'destroyBlockedPeriod'])->name('vehicle-blocked-periods.destroy');
+        Route::resource('categories', VehicleCategoryController::class)->except(['show'])->names('categories');
+    });
+
+    // Chauffeurs (gestionnaire).
+    Route::middleware('can:drivers.manage')->group(function (): void {
+        Route::resource('drivers', DriverController::class)->except(['show']);
+    });
+
+    // Contenus : FAQ, témoignages, messages de contact (gestionnaire).
+    Route::middleware('can:content.manage')->group(function (): void {
+        Route::resource('faqs', FaqController::class)->except(['show']);
+        Route::resource('testimonials', TestimonialController::class)->except(['show']);
+        Route::get('messages', [ContactMessageController::class, 'index'])->name('messages.index');
+        Route::get('messages/{message}', [ContactMessageController::class, 'show'])->name('messages.show');
+        Route::post('messages/{message}/toggle-read', [ContactMessageController::class, 'toggleRead'])->name('messages.toggle-read');
+        Route::delete('messages/{message}', [ContactMessageController::class, 'destroy'])->name('messages.destroy');
+    });
+
+    // Comptes : caissières (gestionnaire) puis tous les comptes (super admin).
+    Route::get('users', [UserController::class, 'index'])->middleware('can:users.manage_cashiers')->name('users.index');
+    Route::get('users/create', [UserController::class, 'create'])->middleware('can:users.manage_cashiers')->name('users.create');
+    Route::post('users', [UserController::class, 'store'])->middleware('can:users.manage_cashiers')->name('users.store');
+    Route::get('users/{user}/edit', [UserController::class, 'edit'])->middleware('can:users.manage_cashiers')->name('users.edit');
+    Route::put('users/{user}', [UserController::class, 'update'])->middleware('can:users.manage_cashiers')->name('users.update');
+    Route::delete('users/{user}', [UserController::class, 'destroy'])->middleware('can:users.manage_cashiers')->name('users.destroy');
+
+    // Rapports et exports (gestionnaire).
+    Route::get('reports', [ReportController::class, 'index'])->middleware('can:reports.view')->name('reports.index');
+    Route::get('reports/export/csv', [ReportController::class, 'exportCsv'])->middleware('can:reports.view')->name('reports.export-csv');
+    Route::get('reports/export/pdf', [ReportController::class, 'exportPdf'])->middleware('can:reports.view')->name('reports.export-pdf');
 });

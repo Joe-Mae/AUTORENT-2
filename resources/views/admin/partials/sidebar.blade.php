@@ -1,19 +1,24 @@
 @php
     /**
      * Sections du menu latéral du back-office, filtrées par permission.
-     * Chaque entrée n'apparaît que si sa route existe : les phases à venir
-     * ajoutent leurs routes et les entrées s'affichent sans toucher à
-     * cette partial.
+     * Les contenus forment un sous-menu déroulant.
      */
     $sections = [
         ['route' => 'admin.dashboard', 'icon' => 'speedometer2', 'label' => 'Tableau de bord', 'can' => null],
         ['route' => 'admin.reservations.index', 'icon' => 'journal-check', 'label' => 'Réservations', 'can' => 'reservations.view'],
         ['route' => 'admin.vehicles.index', 'icon' => 'car-front', 'label' => 'Véhicules', 'can' => 'vehicles.view'],
         ['route' => 'admin.drivers.index', 'icon' => 'person-badge', 'label' => 'Chauffeurs', 'can' => 'drivers.view'],
-        ['route' => 'admin.contents.index', 'icon' => 'file-richtext', 'label' => 'Contenus', 'can' => 'content.manage'],
-        ['route' => 'admin.users.index', 'icon' => 'people', 'label' => 'Utilisateurs', 'can' => 'users.manage'],
+        ['route' => 'admin.reports.index', 'icon' => 'graph-up-arrow', 'label' => 'Rapports', 'can' => 'reports.view'],
+        ['route' => 'admin.users.index', 'icon' => 'people', 'label' => 'Utilisateurs', 'can' => 'users.manage_cashiers'],
         ['route' => 'admin.settings.index', 'icon' => 'gear', 'label' => 'Paramètres', 'can' => 'settings.manage'],
     ];
+
+    $contentLinks = [
+        ['route' => 'admin.faqs.index', 'label' => 'FAQ'],
+        ['route' => 'admin.testimonials.index', 'label' => 'Témoignages'],
+        ['route' => 'admin.messages.index', 'label' => 'Messages'],
+    ];
+    $contentLinks = array_filter($contentLinks, fn ($link) => Route::has($link['route']));
 @endphp
 <nav class="admin-sidebar bg-secondary d-flex flex-column">
     <a href="{{ route('admin.dashboard') }}" class="text-white text-decoration-none fw-bold px-3 py-4 d-flex align-items-center gap-2 border-bottom border-secondary-subtle">
@@ -36,6 +41,25 @@
                 </a>
             </li>
         @endforeach
+
+        @if ($contentLinks !== [] && auth()->user()?->can('content.manage'))
+            <li class="nav-item mt-1">
+                <a class="nav-link text-white-50 rounded d-flex justify-content-between align-items-center {{ request()->routeIs('admin.faqs.*') || request()->routeIs('admin.testimonials.*') || request()->routeIs('admin.messages.*') ? 'active text-white fw-semibold' : '' }}"
+                   data-bs-toggle="collapse" href="#contentMenu" role="button" aria-expanded="{{ request()->routeIs('admin.faqs.*') || request()->routeIs('admin.testimonials.*') || request()->routeIs('admin.messages.*') ? 'true' : 'false' }}">
+                    <span><i class="bi bi-file-richtext me-2"></i>Contenus</span>
+                    <i class="bi bi-chevron-down small"></i>
+                </a>
+                <div class="collapse {{ request()->routeIs('admin.faqs.*') || request()->routeIs('admin.testimonials.*') || request()->routeIs('admin.messages.*') ? 'show' : '' }}" id="contentMenu">
+                    <ul class="nav flex-column ms-3 border-start border-secondary-subtle ps-2 mt-1">
+                        @foreach ($contentLinks as $link)
+                            <li class="nav-item">
+                                <a class="nav-link text-white-50 small py-1 {{ request()->routeIs($link['route'].'.*') ? 'text-white fw-semibold' : '' }}" href="{{ route($link['route']) }}">{{ $link['label'] }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </li>
+        @endif
     </ul>
 
     <div class="mt-auto p-3 small text-white-50 border-top border-secondary-subtle">

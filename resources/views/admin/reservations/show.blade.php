@@ -151,6 +151,37 @@
                         <i class="bi bi-file-earmark-pdf me-1"></i>{{ __('site.admin.reservations.download_pdf') }}
                     </a>
 
+                    @can('reservations.manage')
+                        <div class="d-grid gap-2 mb-3">
+                            <a href="{{ route('admin.reservations.edit', $reservation) }}" class="btn btn-outline-primary">
+                                <i class="bi bi-pencil me-1"></i>{{ __('site.admin.reservations.edit') }}
+                            </a>
+                            @if ($reservation->type->requiresDriver())
+                                <form method="POST" action="{{ route('admin.reservations.assign-driver', $reservation) }}" class="d-grid gap-1">
+                                    @csrf
+                                    <label class="small fw-semibold mb-0" for="driver_id">{{ __('site.admin.drivers.title') }}</label>
+                                    <select name="driver_id" id="driver_id" class="form-select form-select-sm">
+                                        <option value="">{{ __('site.admin.reservations.no_driver') }}</option>
+                                        @foreach (\App\Models\Driver::active()->orderBy('full_name')->get() as $driver)
+                                            <option value="{{ $driver->id }}" @selected($reservation->driver_id === $driver->id)>{{ $driver->full_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button class="btn btn-outline-secondary btn-sm">{{ __('site.admin.reservations.assign_driver') }}</button>
+                                </form>
+                            @endif
+                            @unless ($reservation->status->isTerminal())
+                                <form method="POST" action="{{ route('admin.reservations.cancel', $reservation) }}"
+                                      onsubmit="return confirm('{{ __('site.admin.reservations.cancel_confirm') }}')">
+                                    @csrf
+                                    <textarea name="note" rows="2" class="form-control form-control-sm mb-2" placeholder="{{ __('site.admin.reservations.reject_reason') }}"></textarea>
+                                    <button class="btn btn-outline-danger w-100">
+                                        <i class="bi bi-slash-circle me-1"></i>{{ __('site.admin.reservations.cancel') }}
+                                    </button>
+                                </form>
+                            @endunless
+                        </div>
+                    @endcan
+
                     @if ($status === ReservationStatus::Pending && auth()->user()->can('reservations.verify_identity'))
                         <form method="POST" action="{{ route('admin.reservations.verify-identity', $reservation) }}">
                             @csrf
