@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VehicleFilterRequest;
-use App\Models\VehicleCategory;
 use App\Models\Vehicle;
+use App\Models\VehicleCategory;
 use App\Services\AvailabilityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -13,9 +13,7 @@ use Illuminate\View\View;
 
 class VehicleController extends Controller
 {
-    public function __construct(private readonly AvailabilityService $availability)
-    {
-    }
+    public function __construct(private readonly AvailabilityService $availability) {}
 
     public function index(VehicleFilterRequest $request): View
     {

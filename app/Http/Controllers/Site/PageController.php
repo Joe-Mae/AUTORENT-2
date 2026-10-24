@@ -18,11 +18,6 @@ class PageController extends Controller
         return view('site.driver-service');
     }
 
-    public function checkBooking(): View
-    {
-        return view('site.check-booking');
-    }
-
     public function faq(): View
     {
         return view('site.faq', [
