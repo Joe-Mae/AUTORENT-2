@@ -25,7 +25,33 @@
                 <h1 class="h6 mb-0 fw-semibold text-secondary d-none d-sm-block">@yield('page_title', __('site.admin.title'))</h1>
 
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-primary-subtle text-primary">{{ setting('company_name') }}</span>
+                    <span class="badge bg-primary-subtle text-primary d-none d-md-inline">{{ setting('company_name') }}</span>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm d-flex align-items-center gap-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle fs-5"></i>
+                            <span class="d-none d-sm-inline">{{ auth()->user()->name }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            <li class="px-3 py-2 small text-muted">
+                                {{ auth()->user()->email }}<br>
+                                <span class="badge bg-secondary">{{ auth()->user()->roleLabel() }}</span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('home', app()->getLocale()) }}" target="_blank" rel="noopener">
+                                    <i class="bi bi-box-arrow-up-right me-2"></i>{{ __('site.admin.view_site') }}
+                                </a>
+                            </li>
+                            <li>
+                                <form method="POST" action="{{ route('admin.logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="bi bi-box-arrow-right me-2"></i>{{ __('site.admin.logout') }}
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </header>
 

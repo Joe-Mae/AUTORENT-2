@@ -42,6 +42,23 @@ return [
         'title' => 'Back-office',
         'dashboard_welcome' => 'Bienvenue dans le back-office',
         'dashboard_text' => 'L\'authentification et les modules de gestion arrivent avec les prochaines phases du projet.',
+        'login_title' => 'Connexion',
+        'login_subtitle' => 'Espace réservé au personnel de l\'agence.',
+        'email' => 'Adresse email',
+        'password' => 'Mot de passe',
+        'remember' => 'Se souvenir de moi',
+        'submit' => 'Se connecter',
+        'logout' => 'Déconnexion',
+        'account_disabled' => 'Ce compte est désactivé. Contactez votre administrateur.',
+        'view_site' => 'Voir le site',
+        'stats' => [
+            'reservations' => 'Réservations',
+            'pending' => 'En attente',
+            'vehicles' => 'Véhicules',
+            'vehicles_available' => 'Véhicules disponibles',
+            'drivers' => 'Chauffeurs actifs',
+            'messages' => 'Messages non lus',
+        ],
     ],
 
     'home' => [

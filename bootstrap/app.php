@@ -23,6 +23,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             PreventPageCaching::class,
         ]);
+
+        // Toute la zone admin exige une session authentifiée : les invités
+        // sont renvoyés vers la connexion, les utilisateurs connectés
+        // (déjà identifiés) vers le tableau de bord.
+        $middleware->redirectGuestsTo(fn () => route('admin.login'));
+        $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

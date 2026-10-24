@@ -1,18 +1,18 @@
 @php
     /**
-     * Sections du menu latéral du back-office. Chaque entrée n'apparaît
-     * que si sa route existe : les phases à venir ajoutent leurs routes
-     * et les entrées s'affichent sans toucher à cette partial. Le filtrage
-     * par rôle sera branché en phase 3.
+     * Sections du menu latéral du back-office, filtrées par permission.
+     * Chaque entrée n'apparaît que si sa route existe : les phases à venir
+     * ajoutent leurs routes et les entrées s'affichent sans toucher à
+     * cette partial.
      */
     $sections = [
-        ['route' => 'admin.dashboard', 'icon' => 'speedometer2', 'label' => 'Tableau de bord'],
-        ['route' => 'admin.reservations.index', 'icon' => 'journal-check', 'label' => 'Réservations'],
-        ['route' => 'admin.vehicles.index', 'icon' => 'car-front', 'label' => 'Véhicules'],
-        ['route' => 'admin.drivers.index', 'icon' => 'person-badge', 'label' => 'Chauffeurs'],
-        ['route' => 'admin.contents.index', 'icon' => 'file-richtext', 'label' => 'Contenus'],
-        ['route' => 'admin.users.index', 'icon' => 'people', 'label' => 'Utilisateurs'],
-        ['route' => 'admin.settings.index', 'icon' => 'gear', 'label' => 'Paramètres'],
+        ['route' => 'admin.dashboard', 'icon' => 'speedometer2', 'label' => 'Tableau de bord', 'can' => null],
+        ['route' => 'admin.reservations.index', 'icon' => 'journal-check', 'label' => 'Réservations', 'can' => 'reservations.view'],
+        ['route' => 'admin.vehicles.index', 'icon' => 'car-front', 'label' => 'Véhicules', 'can' => 'vehicles.view'],
+        ['route' => 'admin.drivers.index', 'icon' => 'person-badge', 'label' => 'Chauffeurs', 'can' => 'drivers.view'],
+        ['route' => 'admin.contents.index', 'icon' => 'file-richtext', 'label' => 'Contenus', 'can' => 'content.manage'],
+        ['route' => 'admin.users.index', 'icon' => 'people', 'label' => 'Utilisateurs', 'can' => 'users.manage'],
+        ['route' => 'admin.settings.index', 'icon' => 'gear', 'label' => 'Paramètres', 'can' => 'settings.manage'],
     ];
 @endphp
 <nav class="admin-sidebar bg-secondary d-flex flex-column">
@@ -28,6 +28,7 @@
     <ul class="nav flex-column p-2 gap-1">
         @foreach ($sections as $section)
             @continue(! Route::has($section['route']))
+            @continue($section['can'] !== null && ! auth()->user()?->can($section['can']))
             <li class="nav-item">
                 <a class="nav-link text-white-50 rounded {{ request()->routeIs($section['route']) || request()->routeIs($section['route'].'.*') ? 'active text-white fw-semibold' : '' }}"
                    href="{{ route($section['route']) }}">
@@ -38,6 +39,6 @@
     </ul>
 
     <div class="mt-auto p-3 small text-white-50 border-top border-secondary-subtle">
-        {{ setting('company_name') }} &middot; back-office
+        {{ setting('company_name') }} &middot; {{ __('site.admin.title') }}
     </div>
 </nav>
