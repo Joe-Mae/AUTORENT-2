@@ -38,6 +38,16 @@ return [
             'report' => false,
         ],
 
+        // Pièces d'identité et permis : jamais d'URL publique, l'accès
+        // passe par une route authentifiée à URL signée.
+        'private' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private'),
+            'serve' => false,
+            'throw' => false,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
