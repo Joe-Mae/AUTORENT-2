@@ -7,7 +7,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ReservationStatusHistory extends Model
 {
-    protected $fillable = ['reservation_id', 'from_status', 'to_status', 'user_id', 'note'];
+    protected $fillable = ['reservation_id', 'from_status', 'to_status', 'user_id', 'note', 'properties'];
+
+    protected function casts(): array
+    {
+        return [
+            'properties' => 'array',
+        ];
+    }
 
     public function reservation(): BelongsTo
     {
