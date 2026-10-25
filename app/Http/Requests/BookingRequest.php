@@ -57,6 +57,9 @@ class BookingRequest extends FormRequest
             // Consentements obligatoires
             'terms' => ['accepted'],
             'identity_consent' => ['accepted'],
+
+            // Honeypot anti-spam : champ invisible, doit rester vide (§8).
+            'website' => ['prohibited'],
         ];
     }
 

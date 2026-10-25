@@ -29,6 +29,7 @@ class ReservationService
     public function __construct(
         private readonly AvailabilityService $availability,
         private readonly PricingService $pricing,
+        private readonly UploadSanitizer $sanitizer,
     ) {}
 
     /**
@@ -108,7 +109,7 @@ class ReservationService
                     default => DocumentType::IdentityFront,
                 };
 
-                $path = $file->store('identity/'.$reservation->code, 'private');
+                $path = $this->sanitizer->store($file, 'identity/'.$reservation->code, 'private');
 
                 ReservationDocument::create([
                     'reservation_id' => $reservation->id,

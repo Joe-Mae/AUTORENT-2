@@ -17,6 +17,7 @@ use App\Models\Vehicle;
 use App\Services\AvailabilityService;
 use App\Services\PricingService;
 use App\Services\ReservationService;
+use App\Services\UploadSanitizer;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -135,7 +136,7 @@ class ReservationController extends Controller
             'license' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:'.$maxKb],
         ]);
 
-        $path = $validated['license']->store('license/'.$reservation->code, 'private');
+        $path = app(UploadSanitizer::class)->store($validated['license'], 'license/'.$reservation->code, 'private');
 
         ReservationDocument::create([
             'reservation_id' => $reservation->id,
@@ -384,6 +385,54 @@ class ReservationController extends Controller
             ->when($ignoreReservationId, fn ($query, $id) => $query->whereKeyNot($id))
             ->overlapping($startsAt, $endsAt)
             ->exists();
+    }
+
+    /**
+     * Purge RGPD des pièces d'identité d'une réservation (§8) :
+     * Super Admin uniquement.
+     */
+    public function purgeDocuments(Request $request, Reservation $reservation)
+    {
+        abort_unless($request->user()->can('settings.manage'), 403);
+
+        $this->reservations->purgeIdentityDocuments($reservation->load('documents'));
+
+        ActivityLog::create([
+            'user_id' => $request->user()->id,
+            'action' => 'identity_documents.purged',
+            'description' => $reservation->code,
+            'properties' => ['reason' => 'manual'],
+        ]);
+
+        return back()->with('status', __('site.admin.reservations.documents_purged'));
+    }
+
+    /**
+     * Anonymisation RGPD du client d'une réservation (§8).
+     */
+    public function anonymize(Request $request, Reservation $reservation)
+    {
+        abort_unless($request->user()->can('settings.manage'), 403);
+
+        $reservation->update([
+            'first_name' => 'Client',
+            'last_name' => 'anonymisé',
+            'phone' => '+000000000',
+            'email' => 'anonymise@localhost',
+            'birth_date' => null,
+            'id_card_number' => null,
+            'address' => null,
+        ]);
+
+        $this->reservations->purgeIdentityDocuments($reservation->load('documents'));
+
+        ActivityLog::create([
+            'user_id' => $request->user()->id,
+            'action' => 'reservation.anonymized',
+            'description' => $reservation->code,
+        ]);
+
+        return back()->with('status', __('site.admin.reservations.anonymized'));
     }
 
     /**

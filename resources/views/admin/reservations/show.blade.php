@@ -275,6 +275,26 @@
                     @if ($status->isTerminal())
                         <p class="text-muted small mb-0">{{ __('site.admin.reservations.terminal_status') }}</p>
                     @endif
+
+                    @can('settings.manage')
+                        <hr>
+                        <h4 class="small fw-bold text-danger">{{ __('site.admin.reservations.rgpd_title') }}</h4>
+                        <p class="small text-muted">{{ __('site.admin.reservations.rgpd_hint') }}</p>
+                        @if ($reservation->documents->isNotEmpty())
+                            <form method="POST" action="{{ route('admin.reservations.purge-documents', $reservation) }}" onsubmit="return confirm('{{ __('site.admin.reservations.purge_confirm') }}')">
+                                @csrf
+                                <button class="btn btn-outline-danger btn-sm w-100 mb-2">
+                                    <i class="bi bi-eraser me-1"></i>{{ __('site.admin.reservations.purge_documents') }}
+                                </button>
+                            </form>
+                        @endif
+                        <form method="POST" action="{{ route('admin.reservations.anonymize', $reservation) }}" onsubmit="return confirm('{{ __('site.admin.reservations.anonymize_confirm') }}')">
+                            @csrf
+                            <button class="btn btn-outline-danger btn-sm w-100">
+                                <i class="bi bi-person-x me-1"></i>{{ __('site.admin.reservations.anonymize') }}
+                            </button>
+                        </form>
+                    @endcan
                 </div>
             </div>
         </div>

@@ -58,6 +58,12 @@ Route::middleware('auth')->group(function (): void {
         Route::post('reservations/{reservation}/return', [ReservationController::class, 'returnVehicle'])
             ->middleware('can:reservations.update_status')->name('reservations.return');
 
+        // Droit à l'effacement RGPD : Super Admin uniquement.
+        Route::post('reservations/{reservation}/purge-documents', [ReservationController::class, 'purgeDocuments'])
+            ->middleware('can:settings.manage')->name('reservations.purge-documents');
+        Route::post('reservations/{reservation}/anonymize', [ReservationController::class, 'anonymize'])
+            ->middleware('can:settings.manage')->name('reservations.anonymize');
+
         // Gestion complète (gestionnaire) : création manuelle, modification,
         // annulation, affectation d'un chauffeur.
         Route::middleware('can:reservations.manage')->group(function (): void {

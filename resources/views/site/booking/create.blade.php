@@ -43,6 +43,11 @@
                   data-currency="{{ setting('currency', 'FCFA') }}">
                 @csrf
                 <input type="hidden" name="vehicle_id" value="{{ $vehicle->id }}">
+                {{-- Honeypot : invisible pour les humains, les robots le remplissent --}}
+                <div style="position: absolute; left: -9999px;" aria-hidden="true">
+                    <label for="website">Site web</label>
+                    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                </div>
 
                 {{-- Étape 1 : dates et formule --}}
                 <div class="card border-0 shadow-sm mb-3 booking-step" data-step="1">

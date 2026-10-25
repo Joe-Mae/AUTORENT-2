@@ -8,6 +8,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleBlockedPeriod;
 use App\Models\VehicleCategory;
 use App\Models\VehicleImage;
+use App\Services\UploadSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -123,10 +124,12 @@ class VehicleController extends Controller
 
         $hasPrimary = $vehicle->images()->where('is_primary', true)->exists();
 
+        $sanitizer = app(UploadSanitizer::class);
+
         foreach ($request->file('photos') as $index => $file) {
             VehicleImage::create([
                 'vehicle_id' => $vehicle->id,
-                'path' => $file->store('vehicles', 'public'),
+                'path' => $sanitizer->store($file, 'vehicles', 'public'),
                 'is_primary' => ! $hasPrimary && $index === 0,
             ]);
         }

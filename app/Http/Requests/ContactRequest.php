@@ -21,6 +21,8 @@ class ContactRequest extends FormRequest
             'email' => ['required', 'email', 'max:190'],
             'phone' => ['nullable', 'string', 'max:30'],
             'message' => ['required', 'string', 'max:3000'],
+            // Honeypot anti-spam : champ invisible, doit rester vide (§8).
+            'website' => ['prohibited'],
         ];
     }
 }

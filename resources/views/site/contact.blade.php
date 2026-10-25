@@ -53,6 +53,11 @@
                         <div class="card-body p-4">
                             <form method="POST" action="{{ route('contact.submit', app()->getLocale()) }}">
                                 @csrf
+                                {{-- Honeypot : invisible pour les humains, les robots le remplissent --}}
+                                <div style="position: absolute; left: -9999px;" aria-hidden="true">
+                                    <label for="website">Site web</label>
+                                    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                                </div>
 
                                 <div class="row g-3">
                                     <div class="col-md-6">

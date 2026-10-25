@@ -37,6 +37,6 @@ Route::prefix('{locale}')
         Route::get('/location-avec-chauffeur', [Site\PageController::class, 'driverService'])->name('driver-service');
         Route::get('/faq', [Site\PageController::class, 'faq'])->name('faq');
         Route::get('/contact', [Site\PageController::class, 'contact'])->name('contact');
-        Route::post('/contact', [Site\ContactController::class, 'store'])->name('contact.submit');
+        Route::post('/contact', [Site\ContactController::class, 'store'])->middleware('throttle:contact')->name('contact.submit');
         Route::get('/pages/{page}', [Site\PageController::class, 'page'])->name('page');
     });
