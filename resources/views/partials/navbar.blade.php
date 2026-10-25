@@ -12,6 +12,9 @@
         </a>
 
         <div class="d-flex align-items-center gap-2 order-lg-3">
+            <button type="button" class="btn btn-outline-secondary btn-sm theme-toggle" aria-label="{{ __('site.common.theme_toggle') }}" title="{{ __('site.common.theme_toggle') }}">
+                <i class="bi bi-moon-stars theme-icon-dark"></i><i class="bi bi-sun theme-icon-light"></i>
+            </button>
             <a href="tel:{{ preg_replace('/\s+/', '', setting('contact_phone')) }}" class="btn btn-primary btn-sm d-none d-sm-inline-flex align-items-center gap-1">
                 <i class="bi bi-telephone"></i> {{ __('site.common.call') }}
             </a>

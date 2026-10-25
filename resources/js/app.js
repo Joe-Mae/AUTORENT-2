@@ -6,6 +6,22 @@ import * as bootstrap from 'bootstrap';
 
 window.bootstrap = bootstrap;
 
+// --- Mode sombre / clair ---
+//
+// Le thème initial est posé par un mini-script dans le <head> des layouts
+// (avant le CSS) pour éviter le flash d'un thème erroné. Ici, seule la
+// bascule : la préférence est mémorisée dans localStorage.
+
+const themeToggle = document.querySelector('.theme-toggle');
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const next = document.documentElement.dataset.bsTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.bsTheme = next;
+        localStorage.setItem('theme', next);
+    });
+}
+
 // --- Compteurs animés (éléments [data-counter]) ---
 //
 // La valeur finale est déjà rendue côté serveur : sans JavaScript (ou si

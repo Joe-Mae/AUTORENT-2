@@ -127,6 +127,51 @@ a { color: var(--color-primary); }
     &:hover { color: var(--color-primary); }
 }
 
+/* --- Mode sombre -------------------------------------------------- */
+/*
+   Bootstrap 5.3 adapte ses composants via [data-bs-theme="dark"] ; on
+   n'ajoute ici que nos styles maison. En sombre, la couleur secondaire
+   de l'entreprise (parfois très foncée) est éclaircie pour les textes
+   afin de rester lisible, sans toucher aux fonds de marque (footer…).
+*/
+
+[data-bs-theme='dark'] {
+    --color-body: #e6e9ee;
+    --color-surface: #171a20;
+}
+
+[data-bs-theme='dark'] .navbar-public {
+    background-color: rgba(18, 21, 26, 0.92);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+[data-bs-theme='dark'] .navbar-public.is-scrolled {
+    box-shadow: 0 0.35rem 1.25rem rgba(0, 0, 0, 0.55);
+}
+
+[data-bs-theme='dark'] .text-secondary {
+    color: color-mix(in srgb, var(--color-secondary), white 72%) !important;
+}
+
+[data-bs-theme='dark'] .page-link {
+    color: color-mix(in srgb, var(--color-secondary), white 72%);
+}
+
+[data-bs-theme='dark'] .accordion-button:not(.collapsed) {
+    background-color: color-mix(in srgb, var(--color-accent), black 72%);
+}
+
+/* Aucun bloc blanc pur en sombre : les .bg-white suivent le fond de page. */
+[data-bs-theme='dark'] .bg-white {
+    background-color: var(--bs-body-bg) !important;
+}
+
+/* Bascule : montre l'icône du thème obtenu par le clic. */
+.theme-icon-light { display: none; }
+
+[data-bs-theme='dark'] .theme-icon-light { display: inline-block; }
+[data-bs-theme='dark'] .theme-icon-dark { display: none; }
+
 .page-item.active .page-link {
     background-color: var(--color-primary);
     border-color: var(--color-primary);

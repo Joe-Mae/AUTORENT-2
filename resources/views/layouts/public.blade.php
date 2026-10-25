@@ -8,6 +8,13 @@
 
     <link rel="icon" href="{{ setting('favicon') ? asset('storage/'.setting('favicon')) : asset('favicon.ico') }}">
 
+    {{-- Thème initial posé avant le CSS : évite le flash d'un thème erroné. --}}
+    <script>
+        document.documentElement.dataset.bsTheme =
+            localStorage.getItem('theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    </script>
+
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     @include('partials.theme')
 </head>

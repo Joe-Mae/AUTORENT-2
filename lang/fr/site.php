@@ -30,6 +30,7 @@ return [
         'not_found_text' => 'La page que vous cherchez n\'existe pas ou a été déplacée.',
         'menu' => 'Menu',
         'close' => 'Fermer',
+        'theme_toggle' => 'Basculer le mode sombre / clair',
         'navigation' => 'Navigation',
         'follow_us' => 'Suivez-nous',
         'all_rights_reserved' => 'Tous droits réservés.',

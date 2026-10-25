@@ -7,6 +7,13 @@
 
     <link rel="icon" href="{{ setting('favicon') ? asset('storage/'.setting('favicon')) : asset('favicon.ico') }}">
 
+    {{-- Thème initial posé avant le CSS : évite le flash d'un thème erroné. --}}
+    <script>
+        document.documentElement.dataset.bsTheme =
+            localStorage.getItem('theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    </script>
+
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     @include('partials.theme')
 </head>
@@ -25,6 +32,9 @@
                 <h1 class="h6 mb-0 fw-semibold text-secondary d-none d-sm-block">@yield('page_title', __('site.admin.title'))</h1>
 
                 <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm theme-toggle" aria-label="{{ __('site.common.theme_toggle') }}" title="{{ __('site.common.theme_toggle') }}">
+                        <i class="bi bi-moon-stars theme-icon-dark"></i><i class="bi bi-sun theme-icon-light"></i>
+                    </button>
                     <span class="badge bg-primary-subtle text-primary d-none d-md-inline">{{ setting('company_name') }}</span>
                     <div class="dropdown">
                         <button class="btn btn-light btn-sm d-flex align-items-center gap-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
