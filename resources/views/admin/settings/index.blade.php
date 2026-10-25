@@ -6,6 +6,17 @@
 @section('content')
     @if (session('status'))<div class="alert alert-success">{{ session('status') }}</div>@endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <p class="mb-1 fw-semibold"><i class="bi bi-exclamation-triangle me-1"></i>{{ __('site.booking.errors.title') }}</p>
+            <ul class="small mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data">
         @csrf
 

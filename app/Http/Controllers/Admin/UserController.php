@@ -51,16 +51,16 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('status', __('site.admin.users.created'));
     }
 
-    public function edit(User $user)
+    public function edit(Request $request, User $user)
     {
-        $this->authorize('update', $user);
+        abort_unless($request->user()->can('update', $user), 403);
 
         return view('admin.users.form', ['user' => $user]);
     }
 
     public function update(Request $request, User $user)
     {
-        $this->authorize('update', $user);
+        abort_unless($request->user()->can('update', $user), 403);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:120'],
@@ -73,15 +73,16 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => $validated['password'] ? Hash::make($validated['password']) : $user->password,
-            'is_active' => $request->boolean('is_active', true),
+            // Une checkbox absente du POST est une case décochée.
+            'is_active' => $request->has('is_active'),
         ]);
 
         return redirect()->route('admin.users.index')->with('status', __('site.admin.users.updated'));
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
-        $this->authorize('delete', $user);
+        abort_unless($request->user()->can('delete', $user), 403);
 
         $user->delete();
 
