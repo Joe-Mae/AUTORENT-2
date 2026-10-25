@@ -1,12 +1,14 @@
 //
-// Point d'entrée des styles : Bootstrap 5 et surcharges du thème.
-// Les icônes Bootstrap sont importées dans app.js : Vite n'émet les
-// fichiers de police (woff2) que si le CSS passe par le pipeline JS.
+// Point d'entrée des styles.
+//
+// Ordre imposant : les variables AVANT Bootstrap (compilation), les
+// surcharges de composants APRÈS (sinon Bootstrap les écrase : les
+// .btn-primary restaient bleus quelles que soient les couleurs réglées).
 //
 
 @import 'variables';
+@import 'bootstrap/scss/bootstrap';
+
 @import 'theme';
 @import 'admin';
 @import 'animations';
-
-@import 'bootstrap/scss/bootstrap';
