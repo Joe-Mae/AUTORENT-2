@@ -153,6 +153,29 @@ a { color: var(--color-primary); }
     color: color-mix(in srgb, var(--color-secondary), white 72%) !important;
 }
 
+/* Boutons contour : la couleur secondaire (parfois très foncée) serait
+   invisible en sombre — on l'éclaircit pour le texte, les icônes et
+   les bordures. */
+[data-bs-theme='dark'] .btn-outline-secondary {
+    --bs-btn-color: color-mix(in srgb, var(--color-secondary), white 72%);
+    --bs-btn-border-color: color-mix(in srgb, var(--color-secondary), white 72%);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--color-secondary), white 72%);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--color-secondary), white 72%);
+    --bs-btn-active-bg: color-mix(in srgb, var(--color-secondary), white 72%);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--color-secondary), white 72%);
+    --bs-btn-disabled-color: color-mix(in srgb, var(--color-secondary), white 72%);
+    --bs-btn-disabled-border-color: color-mix(in srgb, var(--color-secondary), white 72%);
+}
+
+/* Bouton plein secondaire : on garde le fond de marque mais on
+   remonte légèrement la bordure pour que le bouton se détache du fond
+   sombre (utile quand la couleur secondaire est quasi noire). */
+[data-bs-theme='dark'] .btn-secondary {
+    --bs-btn-border-color: color-mix(in srgb, var(--color-secondary), white 72%);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--color-secondary), white 60%);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--color-secondary), white 60%);
+}
+
 [data-bs-theme='dark'] .page-link {
     color: color-mix(in srgb, var(--color-secondary), white 72%);
 }
