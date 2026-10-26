@@ -30,6 +30,7 @@ return [
         'not_found_text' => 'La page que vous cherchez n\'existe pas ou a été déplacée.',
         'menu' => 'Menu',
         'close' => 'Fermer',
+        'admin' => 'Admin',
         'theme_toggle' => 'Basculer le mode sombre / clair',
         'navigation' => 'Navigation',
         'follow_us' => 'Suivez-nous',

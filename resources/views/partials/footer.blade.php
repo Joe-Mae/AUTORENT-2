@@ -55,6 +55,11 @@
                 @foreach (['conditions-de-location' => __('site.common.terms'), 'confidentialite' => __('site.common.privacy'), 'mentions-legales' => __('site.common.legal_notice')] as $slug => $label)
                     <a href="{{ route('page', ['locale' => app()->getLocale(), 'page' => $slug]) }}" class="text-white-50 text-decoration-none">{{ $label }}</a>
                 @endforeach
+                <a href="{{ route('admin.login') }}"
+                   class="btn btn-outline-light btn-sm py-0 px-2 opacity-50"
+                   title="{{ __('site.admin.title') }}">
+                    <i class="bi bi-lock small"></i> {{ __('site.common.admin') }}
+                </a>
                 @if (setting('contact_whatsapp'))
                     <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp')) }}" target="_blank" rel="noopener" class="text-white-50 text-decoration-none">
                         <i class="bi bi-whatsapp me-1"></i>{{ __('site.common.whatsapp') }}
