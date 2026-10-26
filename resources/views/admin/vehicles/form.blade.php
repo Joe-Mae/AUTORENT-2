@@ -118,7 +118,7 @@
                                                 <button class="btn btn-sm btn-outline-secondary py-0 px-1" title="{{ __('site.admin.vehicles.make_primary') }}"><i class="bi bi-star"></i></button>
                                             </form>
                                         @endunless
-                                        <form method="POST" action="{{ route('admin.vehicle-images.destroy', $image) }}" onsubmit="return confirm('{{ __('site.admin.confirm_delete') }}')">
+                                        <form method="POST" action="{{ route('admin.vehicle-images.destroy', $image) }}" data-confirm="{{ __('site.admin.confirm_delete') }}">
                                             @csrf @method('DELETE')
                                             <button class="btn btn-sm btn-outline-danger py-0 px-1"><i class="bi bi-trash"></i></button>
                                         </form>
@@ -143,7 +143,7 @@
                             @forelse ($vehicle->blockedPeriods as $period)
                                 <div class="d-flex justify-content-between align-items-center border-bottom py-2 small">
                                     <span>{{ $period->starts_at->format('d/m/Y') }} → {{ $period->ends_at->format('d/m/Y') }} {{ $period->reason ? '· '.$period->reason : '' }}</span>
-                                    <form method="POST" action="{{ route('admin.vehicle-blocked-periods.destroy', $period) }}">
+                                    <form method="POST" action="{{ route('admin.vehicle-blocked-periods.destroy', $period) }}" data-confirm="{{ __('site.admin.vehicles.blocked_confirm') }}">
                                         @csrf @method('DELETE')
                                         <button class="btn btn-sm btn-outline-danger py-0 px-1"><i class="bi bi-x-lg"></i></button>
                                     </form>

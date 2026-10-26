@@ -106,6 +106,9 @@ return [
             'cancel' => 'Annuler la réservation',
             'cancel_confirm' => 'Annuler cette réservation ? Le client recevra un email.',
             'cancelled' => 'Réservation annulée.',
+            'reject_confirm' => 'Refuser définitivement cette réservation ? Le client recevra un email.',
+            'handover_confirm' => 'Confirmer la remise des clés ? Cette étape est définitive.',
+            'return_confirm' => 'Confirmer le retour du véhicule ? La réservation sera définitivement terminée.',
             'starts_at' => 'Début',
             'ends_at' => 'Fin',
             'no_vehicle' => '— Aucun (chauffeur seul) —',
@@ -184,6 +187,7 @@ return [
             'no_blocked_periods' => 'Aucune période bloquée.',
             'blocked_reason' => 'Motif (ex. révision)',
             'blocked_period_removed' => 'Période de blocage supprimée.',
+            'blocked_confirm' => 'Supprimer cette période de blocage ?',
         ],
         'categories' => [
             'title' => 'Catégories',

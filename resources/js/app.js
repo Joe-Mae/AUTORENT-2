@@ -22,6 +22,19 @@ if (themeToggle) {
     });
 }
 
+// --- Confirmations des actions irréversibles ---
+//
+// Tout formulaire portant data-confirm="message" demande une
+// confirmation avant envoi ; l'annulation bloque la soumission.
+
+document.querySelectorAll('form[data-confirm]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+        if (! window.confirm(form.dataset.confirm)) {
+            event.preventDefault();
+        }
+    });
+});
+
 // --- Compteurs animés (éléments [data-counter]) ---
 //
 // La valeur finale est déjà rendue côté serveur : sans JavaScript (ou si

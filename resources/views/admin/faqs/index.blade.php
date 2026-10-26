@@ -34,7 +34,7 @@
                             </div>
                             <div class="text-nowrap">
                                 <a href="{{ route('admin.faqs.edit', $faq) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-                                <form method="POST" action="{{ route('admin.faqs.destroy', $faq) }}" class="d-inline" onsubmit="return confirm('{{ __('site.admin.confirm_delete') }}')">
+                                <form method="POST" action="{{ route('admin.faqs.destroy', $faq) }}" class="d-inline" data-confirm="{{ __('site.admin.confirm_delete') }}">
                                     @csrf @method('DELETE')
                                     <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                                 </form>

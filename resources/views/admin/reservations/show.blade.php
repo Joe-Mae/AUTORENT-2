@@ -171,7 +171,7 @@
                             @endif
                             @unless ($reservation->status->isTerminal())
                                 <form method="POST" action="{{ route('admin.reservations.cancel', $reservation) }}"
-                                      onsubmit="return confirm('{{ __('site.admin.reservations.cancel_confirm') }}')">
+                                      data-confirm="{{ __('site.admin.reservations.cancel_confirm') }}">
                                     @csrf
                                     <textarea name="note" rows="2" class="form-control form-control-sm mb-2" placeholder="{{ __('site.admin.reservations.reject_reason') }}"></textarea>
                                     <button class="btn btn-outline-danger w-100">
@@ -200,7 +200,8 @@
                                 <i class="bi bi-check-circle me-1"></i>{{ __('site.admin.reservations.confirm') }}
                             </button>
                         </form>
-                        <form method="POST" action="{{ route('admin.reservations.decide', $reservation) }}" class="mt-2">
+                        <form method="POST" action="{{ route('admin.reservations.decide', $reservation) }}" class="mt-2"
+                              data-confirm="{{ __('site.admin.reservations.reject_confirm') }}">
                             @csrf
                             <input type="hidden" name="decision" value="reject">
                             <textarea name="note" rows="2" class="form-control form-control-sm mb-2" placeholder="{{ __('site.admin.reservations.reject_reason') }}"></textarea>
@@ -213,7 +214,8 @@
                     @if ($status === ReservationStatus::Confirmed && auth()->user()->can('reservations.update_status'))
                         <hr>
                         <h4 class="small fw-bold">{{ __('site.admin.reservations.handover_title') }}</h4>
-                        <form method="POST" action="{{ route('admin.reservations.handover', $reservation) }}" class="row g-2">
+                        <form method="POST" action="{{ route('admin.reservations.handover', $reservation) }}" class="row g-2"
+                              data-confirm="{{ __('site.admin.reservations.handover_confirm') }}">
                             @csrf
                             <div class="col-6">
                                 <label class="form-label small mb-0">{{ __('site.admin.reservations.mileage') }}</label>
@@ -244,7 +246,8 @@
                     @if ($status === ReservationStatus::Ongoing && auth()->user()->can('reservations.update_status'))
                         <hr>
                         <h4 class="small fw-bold">{{ __('site.admin.reservations.return_title') }}</h4>
-                        <form method="POST" action="{{ route('admin.reservations.return', $reservation) }}" class="row g-2">
+                        <form method="POST" action="{{ route('admin.reservations.return', $reservation) }}" class="row g-2"
+                              data-confirm="{{ __('site.admin.reservations.return_confirm') }}">
                             @csrf
                             <div class="col-6">
                                 <label class="form-label small mb-0">{{ __('site.admin.reservations.mileage') }}</label>
@@ -281,14 +284,14 @@
                         <h4 class="small fw-bold text-danger">{{ __('site.admin.reservations.rgpd_title') }}</h4>
                         <p class="small text-muted">{{ __('site.admin.reservations.rgpd_hint') }}</p>
                         @if ($reservation->documents->isNotEmpty())
-                            <form method="POST" action="{{ route('admin.reservations.purge-documents', $reservation) }}" onsubmit="return confirm('{{ __('site.admin.reservations.purge_confirm') }}')">
+                            <form method="POST" action="{{ route('admin.reservations.purge-documents', $reservation) }}" data-confirm="{{ __('site.admin.reservations.purge_confirm') }}">
                                 @csrf
                                 <button class="btn btn-outline-danger btn-sm w-100 mb-2">
                                     <i class="bi bi-eraser me-1"></i>{{ __('site.admin.reservations.purge_documents') }}
                                 </button>
                             </form>
                         @endif
-                        <form method="POST" action="{{ route('admin.reservations.anonymize', $reservation) }}" onsubmit="return confirm('{{ __('site.admin.reservations.anonymize_confirm') }}')">
+                        <form method="POST" action="{{ route('admin.reservations.anonymize', $reservation) }}" data-confirm="{{ __('site.admin.reservations.anonymize_confirm') }}">
                             @csrf
                             <button class="btn btn-outline-danger btn-sm w-100">
                                 <i class="bi bi-person-x me-1"></i>{{ __('site.admin.reservations.anonymize') }}

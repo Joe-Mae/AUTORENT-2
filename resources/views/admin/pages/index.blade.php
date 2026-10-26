@@ -22,7 +22,7 @@
                             <td class="text-end">
                                 <a href="{{ route('page', ['locale' => 'fr', 'page' => $page->slug]) }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary"><i class="bi bi-box-arrow-up-right"></i></a>
                                 <a href="{{ route('admin.pages.edit', $page) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-                                <form method="POST" action="{{ route('admin.pages.destroy', $page) }}" class="d-inline" onsubmit="return confirm('{{ __('site.admin.confirm_delete') }}')">
+                                <form method="POST" action="{{ route('admin.pages.destroy', $page) }}" class="d-inline" data-confirm="{{ __('site.admin.confirm_delete') }}">
                                     @csrf @method('DELETE')
                                     <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                                 </form>
