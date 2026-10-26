@@ -148,7 +148,7 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm hover-lift">
                         <div class="card-body p-4 text-center">
-                            <span class="service-icon d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-4 mb-3" style="width: 72px; height: 72px;"><i class="bi bi-steering-wheel fs-2"></i></span>
+                            <span class="service-icon d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-4 mb-3" style="width: 72px; height: 72px;"><i class="bi bi-key-fill fs-2"></i></span>
                             <h3 class="h5 fw-bold">{{ __('site.home.services.driver_only_title') }}</h3>
                             <p class="text-muted">{{ __('site.home.services.driver_only_text') }}</p>
                             <a href="{{ route('driver-service', app()->getLocale()) }}" class="btn btn-outline-primary btn-sm">{{ __('site.common.view_more') }}</a>

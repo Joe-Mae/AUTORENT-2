@@ -32,7 +32,7 @@
                     <div class="card h-100 border-0 shadow-sm hover-lift">
                         <div class="card-body p-4">
                             <span class="d-inline-flex align-items-center justify-content-center bg-accent-subtle text-accent rounded-4 mb-3" style="width: 64px; height: 64px;">
-                                <i class="bi bi-steering-wheel fs-3"></i>
+                                <i class="bi bi-key-fill fs-3"></i>
                             </span>
                             <h2 class="h4 fw-bold">{{ __('site.driver_service.driver_only') }}</h2>
                             <p class="text-muted">{{ __('site.driver_service.driver_only_text') }}</p>
