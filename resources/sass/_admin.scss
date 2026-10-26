@@ -1,6 +1,12 @@
 //
-// Coque du back-office : sidebar fixe sur grand écran, tiroir
-// déroulant sous la barre du haut sur tablette et mobile.
+// Coque du back-office.
+//
+// ≥ 992 px : la colonne latérale est statique, s'étire avec le contenu
+// (son fond couvre donc toute la hauteur de la page) et le menu reste
+// collé en haut pendant le défilement des longues pages.
+//
+// < 992 px : la sidebar devient un tiroir superposé, refermable via le
+// bouton croisé qu'elle embarque.
 //
 
 .admin-sidebar {
@@ -21,14 +27,19 @@
     position: absolute;
     inset: 0 auto 0 0;
     z-index: 1040;
-    min-height: 100vh;
     box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.25);
 }
 
 @media (min-width: 992px) {
     .admin-sidebar-collapse {
         position: static;
-        min-height: auto;
         box-shadow: none;
+    }
+
+    .admin-sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
     }
 }

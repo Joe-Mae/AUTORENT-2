@@ -22,14 +22,18 @@
     $contentLinks = array_filter($contentLinks, fn ($link) => Route::has($link['route']));
 @endphp
 <nav class="admin-sidebar bg-secondary d-flex flex-column">
-    <a href="{{ route('admin.dashboard') }}" class="text-white text-decoration-none fw-bold px-3 py-4 d-flex align-items-center gap-2 border-bottom border-secondary-subtle">
-        @if (setting('logo'))
-            <img src="{{ asset('storage/'.setting('logo')) }}" alt="{{ setting('company_name') }}" height="32">
-        @else
-            <i class="bi bi-car-front fs-5"></i>
-        @endif
-        <span>{{ setting('company_name') }}</span>
-    </a>
+    <div class="d-flex align-items-center justify-content-between px-3 py-4 border-bottom border-secondary-subtle">
+        <a href="{{ route('admin.dashboard') }}" class="text-white text-decoration-none fw-bold d-flex align-items-center gap-2">
+            @if (setting('logo'))
+                <img src="{{ asset('storage/'.setting('logo')) }}" alt="{{ setting('company_name') }}" height="32">
+            @else
+                <i class="bi bi-car-front fs-5"></i>
+            @endif
+            <span>{{ setting('company_name') }}</span>
+        </a>
+        {{-- Fermeture du tiroir sur mobile (invisible sur grand écran) --}}
+        <button type="button" class="btn-close btn-close-white d-lg-none" data-bs-toggle="collapse" data-bs-target="#adminSidebarMobile" aria-label="{{ __('site.common.close') }}"></button>
+    </div>
 
     <ul class="nav flex-column p-2 gap-1">
         @foreach ($sections as $section)
