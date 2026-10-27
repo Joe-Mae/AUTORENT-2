@@ -48,8 +48,9 @@
         <div class="col-6 col-lg-3">
             <div class="card border-0 shadow-sm"><div class="card-body">
                 <p class="text-muted small mb-1">{{ __('site.booking.type_label') }}</p>
+                {{-- groupBy renvoie les valeurs d'enum en clés de tableau (string) --}}
                 @foreach ($summary['by_type'] as $type => $count)
-                    <span class="badge text-bg-secondary me-1">{{ $type->label() }} : {{ $count }}</span>
+                    <span class="badge text-bg-secondary me-1">{{ \App\Enums\ReservationType::from($type)->label() }} : {{ $count }}</span>
                 @endforeach
             </div></div>
         </div>
