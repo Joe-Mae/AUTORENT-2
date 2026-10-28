@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\TestMail;
+use App\Support\MailSettings;
 use App\Support\Settings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -33,6 +36,12 @@ class SettingsController extends Controller
             ->map(fn ($value) => $value === '' ? null : $value)
             ->all();
 
+        // Mot de passe SMTP : champ vide = conserver la valeur actuelle
+        // (elle n'est jamais renvoyée au formulaire).
+        if (empty($validated['mail_password'] ?? null)) {
+            unset($values['mail_password']);
+        }
+
         // Identité visuelle : logo et favicon sur le disque public.
         foreach (['logo', 'favicon'] as $brandFile) {
             if ($request->hasFile($brandFile)) {
@@ -53,6 +62,29 @@ class SettingsController extends Controller
         $settings->setMany($values);
 
         return back()->with('status', __('site.admin.settings.saved'));
+    }
+
+    /**
+     * Envoi d'un email de test avec la configuration enregistrée :
+     * permet de valider le SMTP en un clic (§6.3).
+     */
+    public function sendTestEmail(Request $request)
+    {
+        $validated = $request->validate([
+            'test_to' => ['required', 'email', 'max:190'],
+        ]);
+
+        app(MailSettings::class)->apply();
+
+        try {
+            Mail::to($validated['test_to'])->send(new TestMail((string) setting('company_name')));
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()->with('error', __('site.admin.settings.test_email_failed').': '.$e->getMessage());
+        }
+
+        return back()->with('status', __('site.admin.settings.test_email_sent', ['email' => $validated['test_to']]));
     }
 
     /**
@@ -106,6 +138,17 @@ class SettingsController extends Controller
             'pending_blocks_vehicle' => ['sometimes', 'required', 'in:0,1'],
             'upload_max_size_mb' => ['sometimes', 'required', 'integer', 'min:1', 'max:20'],
             'identity_retention_months' => ['sometimes', 'required', 'integer', 'min:1'],
+
+            // Emails : configuration SMTP et notifications (§6.3).
+            // Champ vide = conserver la configuration .env pour ce champ.
+            'mail_host' => ['nullable', 'string', 'max:190'],
+            'mail_port' => ['nullable', 'integer', 'min:1', 'max:65535'],
+            'mail_username' => ['nullable', 'string', 'max:190'],
+            'mail_password' => ['nullable', 'string', 'max:190'],
+            'mail_encryption' => ['nullable', 'in:auto,smtps'],
+            'mail_from_address' => ['nullable', 'email', 'max:190'],
+            'mail_from_name' => ['nullable', 'string', 'max:120'],
+            'notify_email' => ['nullable', 'email', 'max:190'],
         ];
     }
 

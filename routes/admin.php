@@ -133,6 +133,7 @@ Route::middleware('auth')->group(function (): void {
     Route::middleware('can:settings.manage')->group(function (): void {
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');
+        Route::post('settings/test-email', [SettingsController::class, 'sendTestEmail'])->name('settings.test-email');
         Route::resource('pages', PageController::class)->except(['show']);
     });
 

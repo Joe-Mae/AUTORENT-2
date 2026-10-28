@@ -25,6 +25,7 @@
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-home" type="button" role="tab">{{ __('site.admin.settings.home') }}</button></li>
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-contact" type="button" role="tab">{{ __('site.admin.settings.contact_tab') }}</button></li>
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-pricing" type="button" role="tab">{{ __('site.admin.settings.pricing') }}</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-emails" type="button" role="tab">{{ __('site.admin.settings.emails') }}</button></li>
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-system" type="button" role="tab">{{ __('site.admin.settings.system') }}</button></li>
         </ul>
 
@@ -229,6 +230,64 @@
                 </div>
             </div>
 
+            {{-- Emails : SMTP et notifications --}}
+            <div class="tab-pane fade" id="tab-emails" role="tabpanel">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body p-4">
+                        <h2 class="h6 fw-bold">{{ __('site.admin.settings.smtp_title') }}</h2>
+                        <p class="small text-muted">{{ __('site.admin.settings.smtp_hint') }}</p>
+
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label small fw-semibold">{{ __('site.admin.settings.mail_host') }}</label>
+                                <input type="text" name="mail_host" value="{{ setting('mail_host') }}" class="form-control" placeholder="smtp.votre-fournisseur.com">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">{{ __('site.admin.settings.mail_port') }}</label>
+                                <input type="number" name="mail_port" min="1" max="65535" value="{{ setting('mail_port') }}" class="form-control" placeholder="587">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">{{ __('site.admin.settings.mail_username') }}</label>
+                                <input type="text" name="mail_username" value="{{ setting('mail_username') }}" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">{{ __('site.admin.settings.mail_password') }}</label>
+                                <input type="password" name="mail_password" value="" class="form-control" autocomplete="new-password"
+                                       placeholder="{{ setting('mail_password') ? __('site.admin.settings.password_set') : __('site.admin.settings.mail_password_placeholder') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">{{ __('site.admin.settings.mail_encryption') }}</label>
+                                <select name="mail_encryption" class="form-select">
+                                    <option value="auto" @selected(setting('mail_encryption', 'auto') === 'auto')>{{ __('site.admin.settings.encryption_auto') }}</option>
+                                    <option value="smtps" @selected(setting('mail_encryption') === 'smtps')>{{ __('site.admin.settings.encryption_smtps') }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">{{ __('site.admin.settings.mail_from_address') }}</label>
+                                <input type="email" name="mail_from_address" value="{{ setting('mail_from_address') }}" class="form-control" placeholder="no-reply@entreprise.com">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">{{ __('site.admin.settings.mail_from_name') }}</label>
+                                <input type="text" name="mail_from_name" value="{{ setting('mail_from_name') }}" class="form-control" placeholder="{{ setting('company_name') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">{{ __('site.admin.settings.notify_email') }}</label>
+                                <input type="email" name="notify_email" value="{{ setting('notify_email') }}" class="form-control"
+                                       placeholder="{{ setting('contact_email') }}">
+                                <small class="text-muted">{{ __('site.admin.settings.notify_email_hint') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h6 fw-bold">{{ __('site.admin.settings.test_email') }}</h2>
+                        <p class="small text-muted mb-0">{{ __('site.admin.settings.test_email_hint_saved') }}</p>
+                    </div>
+                </div>
+            </div>
+
             {{-- Système --}}
             <div class="tab-pane fade" id="tab-system" role="tabpanel">
                 <div class="card border-0 shadow-sm">
@@ -270,4 +329,26 @@
             <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-check-lg me-1"></i>{{ __('site.common.save') }}</button>
         </div>
     </form>
+
+    {{-- Email de test : formulaire séparé, en dehors du grand formulaire --}}
+    <div class="card border-0 shadow-sm mt-3">
+        <div class="card-body p-4">
+            <h2 class="h6 fw-bold"><i class="bi bi-send-check me-1 text-primary"></i>{{ __('site.admin.settings.test_email') }}</h2>
+            <p class="small text-muted">{{ __('site.admin.settings.test_email_hint') }}</p>
+
+            @if (session('status'))<div class="alert alert-success py-2 mb-2">{{ session('status') }}</div>@endif
+            @if (session('error'))<div class="alert alert-danger py-2 mb-2">{{ session('error') }}</div>@endif
+
+            <form method="POST" action="{{ route('admin.settings.test-email') }}" class="row g-2 align-items-end">
+                @csrf
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold mb-0" for="test_to">{{ __('site.admin.settings.test_email_to') }}</label>
+                    <input type="email" id="test_to" name="test_to" class="form-control" required placeholder="vous@entreprise.com">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-outline-primary w-100"><i class="bi bi-send me-1"></i>{{ __('site.admin.settings.test_email_send') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection

@@ -10,6 +10,7 @@ use App\Mail\ReservationRequestedInternal;
 use App\Models\Reservation;
 use App\Models\ReservationDocument;
 use App\Models\Vehicle;
+use App\Support\MailSettings;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -131,7 +132,11 @@ class ReservationService
         // Emails après la transaction : la demande est enregistrée même
         // si l'envoi échoue (file d'attente + réessais).
         Mail::to($reservation->email)->queue(new ReservationRequested($reservation));
-        Mail::to(setting('contact_email'))->queue(new ReservationRequestedInternal($reservation));
+        $recipient = app(MailSettings::class)->notificationRecipient();
+
+        if ($recipient) {
+            Mail::to($recipient)->queue(new ReservationRequestedInternal($reservation));
+        }
 
         return $reservation;
     }
