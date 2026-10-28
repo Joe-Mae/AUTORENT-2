@@ -7,6 +7,7 @@
         ['route' => 'admin.dashboard', 'icon' => 'speedometer2', 'label' => 'Tableau de bord', 'can' => null],
         ['route' => 'admin.reservations.index', 'icon' => 'journal-check', 'label' => 'Réservations', 'can' => 'reservations.view'],
         ['route' => 'admin.payments.index', 'icon' => 'cash-coin', 'label' => 'Caisse', 'can' => 'payments.manage'],
+        ['route' => 'admin.messages.index', 'icon' => 'inbox', 'label' => 'Clients', 'can' => 'clients.view'],
         ['route' => 'admin.vehicles.index', 'icon' => 'car-front', 'label' => 'Véhicules', 'can' => 'vehicles.view'],
         ['route' => 'admin.drivers.index', 'icon' => 'person-badge', 'label' => 'Chauffeurs', 'can' => 'drivers.view'],
         ['route' => 'admin.reports.index', 'icon' => 'graph-up-arrow', 'label' => 'Rapports', 'can' => 'reports.view'],
@@ -18,7 +19,6 @@
     $contentLinks = [
         ['route' => 'admin.faqs.index', 'label' => 'FAQ'],
         ['route' => 'admin.testimonials.index', 'label' => 'Témoignages'],
-        ['route' => 'admin.messages.index', 'label' => 'Messages'],
     ];
     $contentLinks = array_filter($contentLinks, fn ($link) => Route::has($link['route']));
 @endphp
@@ -50,12 +50,12 @@
 
         @if ($contentLinks !== [] && auth()->user()?->can('content.manage'))
             <li class="nav-item mt-1">
-                <a class="nav-link text-white-50 rounded d-flex justify-content-between align-items-center {{ request()->routeIs('admin.faqs.*') || request()->routeIs('admin.testimonials.*') || request()->routeIs('admin.messages.*') ? 'active text-white fw-semibold' : '' }}"
-                   data-bs-toggle="collapse" href="#contentMenu" role="button" aria-expanded="{{ request()->routeIs('admin.faqs.*') || request()->routeIs('admin.testimonials.*') || request()->routeIs('admin.messages.*') ? 'true' : 'false' }}">
+                <a class="nav-link text-white-50 rounded d-flex justify-content-between align-items-center {{ request()->routeIs('admin.faqs.*') || request()->routeIs('admin.testimonials.*') ? 'active text-white fw-semibold' : '' }}"
+                   data-bs-toggle="collapse" href="#contentMenu" role="button" aria-expanded="{{ request()->routeIs('admin.faqs.*') || request()->routeIs('admin.testimonials.*') ? 'true' : 'false' }}">
                     <span><i class="bi bi-file-richtext me-2"></i>Contenus</span>
                     <i class="bi bi-chevron-down small"></i>
                 </a>
-                <div class="collapse {{ request()->routeIs('admin.faqs.*') || request()->routeIs('admin.testimonials.*') || request()->routeIs('admin.messages.*') ? 'show' : '' }}" id="contentMenu">
+                <div class="collapse {{ request()->routeIs('admin.faqs.*') || request()->routeIs('admin.testimonials.*') ? 'show' : '' }}" id="contentMenu">
                     <ul class="nav flex-column ms-3 border-start border-secondary-subtle ps-2 mt-1">
                         @foreach ($contentLinks as $link)
                             <li class="nav-item">

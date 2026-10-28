@@ -98,12 +98,20 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('drivers', DriverController::class)->except(['show']);
     });
 
-    // Contenus : FAQ, témoignages, messages de contact (gestionnaire).
+    // Contenus : FAQ et témoignages (gestionnaire).
     Route::middleware('can:content.manage')->group(function (): void {
         Route::resource('faqs', FaqController::class)->except(['show']);
         Route::resource('testimonials', TestimonialController::class)->except(['show']);
-        Route::get('messages', [ContactMessageController::class, 'index'])->name('messages.index');
-        Route::get('messages/{message}', [ContactMessageController::class, 'show'])->name('messages.show');
+    });
+
+    // Clients : messages reçus via le formulaire de contact.
+    // Tous les rôles habilités les lisent ; le traitement (lu/non lu,
+    // suppression) reste au gestionnaire et au Super Admin.
+    Route::get('messages', [ContactMessageController::class, 'index'])
+        ->middleware('can:clients.view')->name('messages.index');
+    Route::get('messages/{message}', [ContactMessageController::class, 'show'])
+        ->middleware('can:clients.view')->name('messages.show');
+    Route::middleware('can:content.manage')->group(function (): void {
         Route::post('messages/{message}/toggle-read', [ContactMessageController::class, 'toggleRead'])->name('messages.toggle-read');
         Route::delete('messages/{message}', [ContactMessageController::class, 'destroy'])->name('messages.destroy');
     });

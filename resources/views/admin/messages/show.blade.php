@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', __('site.admin.messages.title'))
+@section('title', __('site.admin.clients.title'))
 @section('page_title', $message->name)
 
 @section('content')
@@ -14,12 +14,14 @@
                         · {{ $message->created_at->format('d/m/Y H:i') }}
                     </p>
                 </div>
-                <form method="POST" action="{{ route('admin.messages.toggle-read', $message) }}">
-                    @csrf
-                    <button class="btn btn-sm {{ $message->is_read ? 'btn-outline-secondary' : 'btn-primary' }}">
-                        <i class="bi bi-check2-all me-1"></i>{{ $message->is_read ? __('site.admin.messages.mark_unread') : __('site.admin.messages.mark_read') }}
-                    </button>
-                </form>
+                @can('content.manage')
+                    <form method="POST" action="{{ route('admin.messages.toggle-read', $message) }}">
+                        @csrf
+                        <button class="btn btn-sm {{ $message->is_read ? 'btn-outline-secondary' : 'btn-primary' }}">
+                            <i class="bi bi-check2-all me-1"></i>{{ $message->is_read ? __('site.admin.messages.mark_unread') : __('site.admin.messages.mark_read') }}
+                        </button>
+                    </form>
+                @endcan
             </div>
 
             <div class="bg-surface rounded-3 p-3">

@@ -48,6 +48,7 @@ class Roles
             'reservations.update_status', // remise des clés, retour
             'reservations.view_documents',
             'payments.manage', // encaissements à l'agence
+            'clients.view', // lire les messages reçus via le formulaire de contact
         ];
     }
 

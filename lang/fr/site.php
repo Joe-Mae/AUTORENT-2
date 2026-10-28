@@ -241,6 +241,10 @@ return [
             'deleted' => 'Témoignage supprimé.',
             'empty' => 'Aucun témoignage.',
         ],
+        'clients' => [
+            'title' => 'Clients',
+            'subtitle' => 'Messages reçus via le formulaire de contact.',
+        ],
         'messages' => [
             'title' => 'Messages de contact',
             'read' => 'Lu',

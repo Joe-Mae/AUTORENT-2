@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', __('site.admin.messages.title'))
-@section('page_title', __('site.admin.messages.title'))
+@section('title', __('site.admin.clients.title'))
+@section('page_title', __('site.admin.clients.title'))
 
 @section('content')
     @if (session('status'))<div class="alert alert-success">{{ session('status') }}</div>@endif
@@ -25,10 +25,12 @@
                             </td>
                             <td class="text-end">
                                 <a href="{{ route('admin.messages.show', $message) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
-                                <form method="POST" action="{{ route('admin.messages.destroy', $message) }}" class="d-inline" data-confirm="{{ __('site.admin.confirm_delete') }}">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                                </form>
+                                @can('content.manage')
+                                    <form method="POST" action="{{ route('admin.messages.destroy', $message) }}" class="d-inline" data-confirm="{{ __('site.admin.confirm_delete') }}">
+                                        @csrf @method('DELETE')
+                                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                @endcan
                             </td>
                         </tr>
                     @empty
