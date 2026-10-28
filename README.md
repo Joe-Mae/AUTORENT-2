@@ -18,7 +18,7 @@ Plateforme web complète de location de véhicules **avec ou sans chauffeur** et
 
 **Back-office** — 3 rôles cumulatifs (Super Admin ⊃ Gestionnaire ⊃ Caissière) :
 
-- **Caissière** : liste filtrable des réservations, vérification d'identité, confirmation/refus (emails au client), photo/scan du permis à l'agence, remise des clés et retour avec notes d'état (kilométrage, carburant, dégâts), PDF.
+- **Caissière** : liste filtrable des réservations, vérification d'identité, confirmation/refus (emails au client), photo/scan du permis à l'agence, remise des clés et retour avec notes d'état (kilométrage, carburant, dégâts), PDF, **encaissements** (espèces, mobile money, carte, virement).
 - **Gestionnaire** : flotte (photos multiples, périodes de blocage), catégories, chauffeurs + affectation **anti double-booking**, réservations manuelles/modification/annulation, FAQ, témoignages, messages, comptes caissières, **rapports et exports CSV/PDF**.
 - **Super Admin** : identité et apparence du site (logo, couleurs avec aperçu, diaporama), textes, coordonnées, **tarifs globaux** (supplément/forfait chauffeur, seuils, devise), préfixe des codes, règle « en attente bloque », pages légales, tous les comptes, **journal d'audit**.
 

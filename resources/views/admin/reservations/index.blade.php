@@ -60,6 +60,7 @@
                         <th>{{ __('site.booking.summary_dates') }}</th>
                         <th class="text-end">{{ __('site.booking.summary_total') }}</th>
                         <th>{{ __('site.booking.status') }}</th>
+                        <th>{{ __('site.admin.payments.title') }}</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -73,6 +74,7 @@
                             <td><small>{{ $reservation->starts_at->format('d/m/Y') }} → {{ $reservation->ends_at->format('d/m/Y') }}</small><br><small class="text-muted">{{ $reservation->days_count }} j</small></td>
                             <td class="text-end">{{ format_price((float) $reservation->total_price) }}</td>
                             <td><x-reservation-status :status="$reservation->status" /></td>
+                            <td><x-payment-status :reservation="$reservation" /></td>
                             <td class="text-end">
                                 <a href="{{ route('admin.reservations.show', $reservation) }}" class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-eye"></i>
@@ -80,7 +82,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="8" class="text-center text-muted py-4">{{ __('site.admin.reservations.empty') }}</td></tr>
+                        <tr><td colspan="9" class="text-center text-muted py-4">{{ __('site.admin.reservations.empty') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>

@@ -6,6 +6,7 @@
     $sections = [
         ['route' => 'admin.dashboard', 'icon' => 'speedometer2', 'label' => 'Tableau de bord', 'can' => null],
         ['route' => 'admin.reservations.index', 'icon' => 'journal-check', 'label' => 'Réservations', 'can' => 'reservations.view'],
+        ['route' => 'admin.payments.index', 'icon' => 'cash-coin', 'label' => 'Caisse', 'can' => 'payments.manage'],
         ['route' => 'admin.vehicles.index', 'icon' => 'car-front', 'label' => 'Véhicules', 'can' => 'vehicles.view'],
         ['route' => 'admin.drivers.index', 'icon' => 'person-badge', 'label' => 'Chauffeurs', 'can' => 'drivers.view'],
         ['route' => 'admin.reports.index', 'icon' => 'graph-up-arrow', 'label' => 'Rapports', 'can' => 'reports.view'],

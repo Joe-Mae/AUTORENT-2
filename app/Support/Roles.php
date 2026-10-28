@@ -47,6 +47,7 @@ class Roles
             'reservations.upload_license',
             'reservations.update_status', // remise des clés, retour
             'reservations.view_documents',
+            'payments.manage', // encaissements à l'agence
         ];
     }
 

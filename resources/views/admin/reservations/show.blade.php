@@ -79,6 +79,68 @@
                 </div>
             </div>
 
+            {{-- Caisse : encaissements de la location --}}
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                        <h3 class="h6 fw-bold mb-0"><i class="bi bi-cash-coin me-1 text-primary"></i>{{ __('site.admin.payments.title') }}</h3>
+                        <x-payment-status :reservation="$reservation" />
+                    </div>
+
+                    <div class="row small mb-3">
+                        <div class="col-4"><strong>{{ __('site.booking.summary_total') }}</strong><br>{{ format_price((float) $reservation->total_price) }}</div>
+                        <div class="col-4"><strong>{{ __('site.admin.payments.paid_amount') }}</strong><br>{{ format_price($reservation->paidAmount()) }}</div>
+                        <div class="col-4"><strong>{{ __('site.admin.payments.balance') }}</strong><br class="d-none">{{ format_price($reservation->paymentBalance()) }}</div>
+                    </div>
+
+                    @forelse ($reservation->payments as $payment)
+                        <div class="d-flex justify-content-between align-items-center border-top py-2">
+                            <div class="small">
+                                <i class="bi bi-{{ $payment->method->icon() }} me-1"></i><strong>{{ $payment->method->label() }}</strong>
+                                @if ($payment->reference)<span class="text-muted">· {{ $payment->reference }}</span>@endif
+                                <span class="text-muted d-block">{{ $payment->receiver?->name ?? '—' }} · {{ $payment->created_at->format('d/m/Y H:i') }}</span>
+                            </div>
+                            <div class="text-end">
+                                <span class="fw-semibold">{{ format_price((float) $payment->amount) }}</span>
+                                <form method="POST" action="{{ route('admin.payments.destroy', $payment) }}" class="d-inline"
+                                      data-confirm="{{ __('site.admin.payments.delete_confirm') }}">
+                                    @csrf @method('DELETE')
+                                    <button class="btn btn-sm btn-outline-danger py-0 px-1 ms-2"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="small text-muted mb-0">{{ __('site.admin.payments.none_yet') }}</p>
+                    @endforelse
+
+                    @unless ($reservation->isFullyPaid())
+                        <form method="POST" action="{{ route('admin.payments.store', $reservation) }}" class="row g-2 mt-3 border-top pt-3">
+                            @csrf
+                            <div class="col-6 col-md-3">
+                                <label class="form-label small mb-0 fw-semibold">{{ __('site.admin.payments.amount') }}</label>
+                                <input type="number" name="amount" min="100" step="100" max="{{ $reservation->paymentBalance() }}"
+                                       value="{{ $reservation->paymentBalance() }}" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label small mb-0 fw-semibold">{{ __('site.admin.payments.method') }}</label>
+                                <select name="method" class="form-select form-select-sm">
+                                    @foreach (\App\Enums\PaymentMethod::cases() as $method)
+                                        <option value="{{ $method->value }}">{{ $method->label() }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label small mb-0 fw-semibold">{{ __('site.admin.payments.reference') }}</label>
+                                <input type="text" name="reference" class="form-control form-control-sm" placeholder="{{ __('site.admin.payments.reference_hint') }}">
+                            </div>
+                            <div class="col-6 col-md-3 d-flex align-items-end">
+                                <button class="btn btn-primary btn-sm w-100"><i class="bi bi-plus-circle me-1"></i>{{ __('site.admin.payments.record') }}</button>
+                            </div>
+                        </form>
+                    @endunless
+                </div>
+            </div>
+
             {{-- Documents d'identité et permis --}}
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-body">

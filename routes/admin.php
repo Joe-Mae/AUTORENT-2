@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DriverController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\SettingsController;
@@ -63,6 +64,13 @@ Route::middleware('auth')->group(function (): void {
             ->middleware('can:settings.manage')->name('reservations.purge-documents');
         Route::post('reservations/{reservation}/anonymize', [ReservationController::class, 'anonymize'])
             ->middleware('can:settings.manage')->name('reservations.anonymize');
+
+        // Caisse : encaissements à l'agence (tous les rôles habilités).
+        Route::middleware('can:payments.manage')->group(function (): void {
+            Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
+            Route::post('reservations/{reservation}/payments', [PaymentController::class, 'store'])->name('payments.store');
+            Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+        });
 
         // Gestion complète (gestionnaire) : création manuelle, modification,
         // annulation, affectation d'un chauffeur.

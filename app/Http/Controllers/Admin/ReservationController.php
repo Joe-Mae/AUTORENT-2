@@ -62,6 +62,7 @@ class ReservationController extends Controller
 
         $reservations = Reservation::query()
             ->with(['vehicle.category', 'driver'])
+            ->withSum('payments as paid_total', 'amount')
             ->when($filters['status'] ?? null, fn ($query, $status) => $query->where('status', $status))
             ->when($filters['vehicle_id'] ?? null, fn ($query, $vehicle) => $query->where('vehicle_id', $vehicle))
             ->when($filters['from'] ?? null, fn ($query, $from) => $query->whereDate('starts_at', '>=', $from))

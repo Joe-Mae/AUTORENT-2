@@ -72,6 +72,28 @@ class Reservation extends Model
         return $this->hasMany(ReservationStatusHistory::class)->latest('id');
     }
 
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /* --- Caisse --- */
+
+    public function paidAmount(): float
+    {
+        return (float) $this->payments()->sum('amount');
+    }
+
+    public function paymentBalance(): float
+    {
+        return (float) $this->total_price - $this->paidAmount();
+    }
+
+    public function isFullyPaid(): bool
+    {
+        return $this->paymentBalance() <= 0.01;
+    }
+
     /* --- Présentation --- */
 
     public function clientFullName(): string
