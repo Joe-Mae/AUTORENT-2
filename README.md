@@ -12,7 +12,7 @@ Plateforme web complète de location de véhicules **avec ou sans chauffeur** et
 - Garage : filtres (catégorie, marque, places, boîte, carburant, prix, **disponibilité sur dates**), tri, pagination.
 - Fiche véhicule : galerie, caractéristiques, **calendrier de disponibilité** rendu côté serveur, véhicules similaires.
 - Réservation en ligne **sans compte client** : formulaire en 4 étapes, prix calculé en direct côté navigateur **et recalculé côté serveur** (seule source de vérité), **pièce d'identité obligatoire** (recto + verso optionnel), double consentement.
-- Page « Consulter ma réservation » : code + email/téléphone → statut, détails, **PDF récapitulatif**.
+- Page « Consulter ma réservation » : par code, nom/prénom ou email/téléphone → statut, détails, **PDF récapitulatif**.
 - Location avec chauffeur : les deux formules, tarifs issus des réglages, exemples d'usage.
 - FAQ dynamique (accordéon), contact (enregistrement base + email en file d'attente + carte Google Maps configurable), pages légales éditables.
 

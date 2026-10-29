@@ -166,6 +166,94 @@ class ReservationFlowTest extends TestCase
             ->assertSessionHas('lookup_error');
     }
 
+    public function test_check_booking_finds_reservation_with_code_alone(): void
+    {
+        Mail::fake();
+        $this->post('/fr/reservation', $this->validBookingData());
+
+        $code = Reservation::first()->code;
+
+        // Code saisi en minuscules et sans autre critère.
+        $this->post('/fr/consulter-reservation', ['code' => strtolower($code)])
+            ->assertOk()
+            ->assertSee($code);
+    }
+
+    public function test_check_booking_finds_reservation_by_name(): void
+    {
+        Mail::fake();
+        $this->post('/fr/reservation', $this->validBookingData([
+            'first_name' => 'Joe-Maria',
+            'last_name' => 'ADJANOR',
+        ]));
+
+        $code = Reservation::first()->code;
+
+        $this->post('/fr/consulter-reservation', ['contact' => 'adjanor'])
+            ->assertOk()
+            ->assertSee($code);
+
+        $this->post('/fr/consulter-reservation', ['contact' => 'Joe-Maria ADJ'])
+            ->assertOk()
+            ->assertSee($code);
+    }
+
+    public function test_check_booking_finds_reservation_by_phone_whatever_the_formatting(): void
+    {
+        Mail::fake();
+        $this->post('/fr/reservation', $this->validBookingData([
+            'phone' => '+22897224219',
+        ]));
+
+        $code = Reservation::first()->code;
+
+        $this->post('/fr/consulter-reservation', ['contact' => '+228 97 22 42 19'])
+            ->assertOk()
+            ->assertSee($code);
+    }
+
+    public function test_check_booking_combines_code_and_name(): void
+    {
+        Mail::fake();
+        $this->post('/fr/reservation', $this->validBookingData());
+
+        $code = Reservation::first()->code;
+
+        $this->post('/fr/consulter-reservation', ['code' => $code, 'contact' => 'Jean'])
+            ->assertOk()
+            ->assertSee($code);
+
+        $this->post('/fr/consulter-reservation', ['code' => $code, 'contact' => 'Autre Nom'])
+            ->assertSessionHas('lookup_error');
+    }
+
+    public function test_check_booking_lists_all_reservations_matching_a_name(): void
+    {
+        Mail::fake();
+
+        Reservation::factory()->count(2)->create([
+            'first_name' => 'Joe-Maria',
+            'last_name' => 'ADJANOR',
+            'email' => 'adjjoemaria16@gmail.com',
+        ]);
+
+        $codes = Reservation::pluck('code');
+
+        $response = $this->post('/fr/consulter-reservation', ['contact' => 'ADJANOR'])
+            ->assertOk()
+            ->assertSee('2 réservations trouvées');
+
+        foreach ($codes as $code) {
+            $response->assertSee($code);
+        }
+    }
+
+    public function test_check_booking_requires_at_least_one_criterion(): void
+    {
+        $this->post('/fr/consulter-reservation', [])
+            ->assertSessionHasErrors('code');
+    }
+
     public function test_pdf_download_requires_prior_verification(): void
     {
         Mail::fake();
