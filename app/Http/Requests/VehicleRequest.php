@@ -33,6 +33,24 @@ class VehicleRequest extends FormRequest
             'daily_price' => ['required', 'numeric', 'min:0'],
             'status' => ['required', Rule::enum(VehicleStatus::class)],
             'description' => ['nullable', 'string', 'max:2000'],
+            'video' => [
+                'nullable',
+                'file',
+                'mimes:mp4,webm',
+                'max:'.((int) setting('upload_max_size_mb', '5') * 1024),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'video.mimes' => __('site.admin.vehicles.video_invalid'),
+            'video.max' => __('site.admin.vehicles.video_max', ['size' => setting('upload_max_size_mb', '5')]),
+            'video.uploaded' => __('site.admin.vehicles.video_invalid'),
         ];
     }
 

@@ -10,6 +10,7 @@ use App\Models\VehicleCategory;
 use App\Models\VehicleImage;
 use App\Services\UploadSanitizer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class VehicleController extends Controller
@@ -44,6 +45,7 @@ class VehicleController extends Controller
     {
         $vehicle = Vehicle::create($request->vehicleData());
         $this->storeImages($request, $vehicle);
+        $this->storeVideo($request, $vehicle);
 
         return redirect()->route('admin.vehicles.index')->with('status', __('site.admin.vehicles.created'));
     }
@@ -62,6 +64,7 @@ class VehicleController extends Controller
     {
         $vehicle->update($request->vehicleData());
         $this->storeImages($request, $vehicle);
+        $this->storeVideo($request, $vehicle);
 
         // Blocage de périodes (maintenance) depuis la fiche.
         if ($request->filled(['blocked_from', 'blocked_to'])) {
@@ -133,5 +136,24 @@ class VehicleController extends Controller
                 'is_primary' => ! $hasPrimary && $index === 0,
             ]);
         }
+    }
+
+    /**
+     * Vidéo de présentation : une seule par véhicule, remplacée à chaque
+     * nouvel upload (l'ancien fichier est supprimé du disque public).
+     */
+    private function storeVideo(Request $request, Vehicle $vehicle): void
+    {
+        if (! $request->hasFile('video')) {
+            return;
+        }
+
+        if ($vehicle->video_path) {
+            Storage::disk('public')->delete($vehicle->video_path);
+        }
+
+        $vehicle->update([
+            'video_path' => $request->file('video')->store('vehicles/videos', 'public'),
+        ]);
     }
 }

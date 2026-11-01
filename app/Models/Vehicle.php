@@ -19,7 +19,7 @@ class Vehicle extends Model
     protected $fillable = [
         'vehicle_category_id', 'brand', 'model', 'year', 'registration_plate',
         'seats', 'transmission', 'fuel', 'mileage_km', 'daily_price',
-        'status', 'features', 'description',
+        'status', 'features', 'description', 'video_path',
     ];
 
     protected function casts(): array
@@ -64,6 +64,15 @@ class Vehicle extends Model
     public function fullName(): string
     {
         return $this->brand.' '.$this->model;
+    }
+
+    /**
+     * URL de la vidéo de présentation, indépendante de APP_URL comme
+     * les photos (marque blanche sur plusieurs domaines).
+     */
+    public function videoUrl(): ?string
+    {
+        return $this->video_path ? asset('storage/'.$this->video_path) : null;
     }
 
     /* --- Scopes --- */

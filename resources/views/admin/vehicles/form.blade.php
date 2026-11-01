@@ -134,6 +134,21 @@
                 </div>
             </div>
 
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <h2 class="h6 fw-bold mb-3">{{ __('site.admin.vehicles.video') }}</h2>
+
+                    @if ($isEdit && $vehicle->video_path)
+                        <video src="{{ $vehicle->videoUrl() }}" controls preload="metadata" class="w-100 rounded mb-3" style="max-height: 160px; background: #000;"></video>
+                    @endif
+
+                    <label class="form-label small fw-semibold" for="video">{{ $isEdit ? __('site.admin.vehicles.video_replace') : __('site.admin.vehicles.video') }}</label>
+                    <input type="file" id="video" name="video" accept="video/mp4,video/webm" class="form-control @error('video') is-invalid @enderror">
+                    @error('video')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <small class="text-muted">{{ __('site.admin.vehicles.video_hint', ['size' => setting('upload_max_size_mb', '5')]) }}</small>
+                </div>
+            </div>
+
             @if ($isEdit)
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">

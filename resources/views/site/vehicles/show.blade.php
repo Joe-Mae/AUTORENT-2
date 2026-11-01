@@ -40,6 +40,12 @@
                         <img src="{{ $vehicle->images->first()?->url() ?? asset('img/hero-default.svg') }}" class="w-100 rounded-4 object-fit-cover shadow-sm" style="height: 420px;" alt="{{ $vehicle->fullName() }}">
                     @endif
 
+                    @if ($vehicle->video_path)
+                        <video src="{{ $vehicle->videoUrl() }}" controls playsinline preload="metadata"
+                               aria-label="{{ __('site.vehicles.video') }} — {{ $vehicle->fullName() }}"
+                               class="w-100 rounded-4 shadow-sm mt-3" style="max-height: 420px; background: #000;"></video>
+                    @endif
+
                     <h1 class="h3 fw-bold mt-4 mb-1">{{ $vehicle->fullName() }} <span class="text-muted">· {{ $vehicle->year }}</span></h1>
                     <p class="text-muted"><i class="bi bi-tag me-1"></i>{{ $vehicle->category->name }}</p>
 

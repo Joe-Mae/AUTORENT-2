@@ -76,6 +76,82 @@ class ManagerBackOfficeTest extends TestCase
         Storage::disk('public')->assertExists($vehicle->images->first()->path);
     }
 
+    /**
+     * Champs obligatoires de la fiche véhicule, surchargés au besoin.
+     *
+     * @return array<string, mixed>
+     */
+    private function vehiclePayload(array $overrides = []): array
+    {
+        return array_merge([
+            'vehicle_category_id' => $this->vehicle->vehicle_category_id,
+            'brand' => $this->vehicle->brand,
+            'model' => $this->vehicle->model,
+            'year' => $this->vehicle->year,
+            'registration_plate' => $this->vehicle->registration_plate,
+            'seats' => $this->vehicle->seats,
+            'transmission' => $this->vehicle->transmission->value,
+            'fuel' => $this->vehicle->fuel->value,
+            'mileage_km' => $this->vehicle->mileage_km,
+            'daily_price' => $this->vehicle->daily_price,
+            'status' => $this->vehicle->status->value,
+        ], $overrides);
+    }
+
+    public function test_manager_can_add_a_presentation_video_to_a_vehicle(): void
+    {
+        $this->actingAs($this->manager)
+            ->put("/admin/vehicles/{$this->vehicle->id}", $this->vehiclePayload([
+                'video' => UploadedFile::fake()->create('presentation.mp4', 2048, 'video/mp4'),
+            ]))
+            ->assertRedirect();
+
+        $this->vehicle->refresh();
+
+        $this->assertNotNull($this->vehicle->video_path);
+        Storage::disk('public')->assertExists($this->vehicle->video_path);
+
+        // Le formulaire d'édition propose la vidéo et son aperçu.
+        $this->actingAs($this->manager)
+            ->get("/admin/vehicles/{$this->vehicle->id}/edit")
+            ->assertOk()
+            ->assertSee('Vidéo de présentation');
+
+        // La vidéo est visible sur la fiche publique du véhicule.
+        $this->get("/fr/vehicules/{$this->vehicle->id}")
+            ->assertOk()
+            ->assertSee($this->vehicle->videoUrl());
+    }
+
+    public function test_replacing_a_video_deletes_the_previous_file(): void
+    {
+        Storage::disk('public')->put('vehicles/videos/ancienne.mp4', 'old');
+        $this->vehicle->update(['video_path' => 'vehicles/videos/ancienne.mp4']);
+
+        $this->actingAs($this->manager)
+            ->put("/admin/vehicles/{$this->vehicle->id}", $this->vehiclePayload([
+                'video' => UploadedFile::fake()->create('nouvelle.webm', 1024, 'video/webm'),
+            ]))
+            ->assertRedirect();
+
+        $this->vehicle->refresh();
+
+        Storage::disk('public')->assertMissing('vehicles/videos/ancienne.mp4');
+        Storage::disk('public')->assertExists($this->vehicle->video_path);
+        $this->assertNotSame('vehicles/videos/ancienne.mp4', $this->vehicle->video_path);
+    }
+
+    public function test_vehicle_rejects_a_non_video_upload(): void
+    {
+        $this->actingAs($this->manager)
+            ->put("/admin/vehicles/{$this->vehicle->id}", $this->vehiclePayload([
+                'video' => UploadedFile::fake()->create('document.pdf', 100, 'application/pdf'),
+            ]))
+            ->assertSessionHasErrors('video');
+
+        $this->assertNull($this->vehicle->fresh()->video_path);
+    }
+
     public function test_cashier_cannot_manage_vehicles(): void
     {
         $this->actingAs($this->cashier)
